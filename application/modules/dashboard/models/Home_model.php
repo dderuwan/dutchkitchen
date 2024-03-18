@@ -888,11 +888,14 @@ class Home_model extends CI_Model {
 		public function pendingorder()
 
 		{
-			$this->db->select('customer_order.*,customerinfo.firstname');
+			$this->db->select('customer_order.*,customerinfo.firstname,item_foods.ProductName');
 
 			$this->db->from('customer_order');
 
 			$this->db->join('customerinfo','customer_order.customer_id=customerinfo.customerid','left');
+
+			$this->db->join('order_menu','customer_order.order_id=order_menu.order_id','left');
+			$this->db->join('item_foods','order_menu.menu_id=item_foods.ProductsID','left');
 
 			$this->db->where('order_status', 1);
 
@@ -903,17 +906,26 @@ class Home_model extends CI_Model {
 			if ($query->num_rows() > 0) {
 
 				return $query->result();  
-
+				
+		
 			}
 
 			return false;
 			
 
-
-		
-			
 	
 		}
+		// public function get_itemlist($id){
+		// 	$this->db->select('order_menu.*,item_foods.ProductName,variant.variantid,variant.variantName,variant.price');
+		// 	$this->db->from('order_menu');
+		// 	$this->db->join('item_foods','order_menu.menu_id=item_foods.ProductsID','left');
+		// 	$this->db->join('variant','order_menu.varientid=variant.variantid','left');
+		// 	$this->db->where('order_menu.order_id',$id);
+		// 	$query = $this->db->get();
+		// 	$orderinfo=$query->result();
+			
+		// 	return $orderinfo;
+		// }
 	
 
 

@@ -98,12 +98,8 @@ class Home extends MX_Controller
 		$data['nextayorder'] = $this->home_model->nextdayorderlist();
 
 
-
-
 		$data['pendingorder'] = $this->home_model->pendingorder();
 	
-
-
 
 		$months = '';
 
@@ -486,8 +482,6 @@ class Home extends MX_Controller
 	}
 
 	public function updateorderstatus($id){
-		
-
 		$customerorder=$this->db->select("*")->from('customer_order')->where('order_id',$id)->get()->row();
 		if($customerorder){
 			$data = array(

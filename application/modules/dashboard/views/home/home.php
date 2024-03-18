@@ -1,3 +1,4 @@
+<audio id="myAudio" src="<?php echo base_url() ?>assets/reception.mp3" ></audio>
 <div class="row">
     <div class="col-12">
         <div class="row">
@@ -16,6 +17,7 @@
                         </div>
 
                         <p class="card-category text-uppercase fs-10 font-weight-bold text-muted">
+                        
 
                             Pending Orders
                         </p>
@@ -102,6 +104,15 @@
                         </div>
 
                     </div>
+                    <input type="hidden" id="oid" value="<?php echo $pendingorder[0]->order_id ?>">
+                    <?php foreach ($pendingorder as $result) :
+                    ?>
+
+                        <input type="hidden" id="orderproduct" class="orderproduct" value="<?php echo $result->ProductName ?>">
+
+                    <?php
+                    endforeach;
+                    ?>
                 </div>
             </div>
 
@@ -146,46 +157,59 @@
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/apexcharts.active.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // function loadswal() {
-    //     Swal.fire({
-    //         title: "7 ORDERS",
-    //         text: "PENDING ",
-    //         icon: "info"
-    //     });
-    // }
-
-    $(document).ready(function() {
+    var sound =  document.getElementById('myAudio');
+ 
+    window.addEventListener("load", function() {
+        setTimeout(function() {
+            sound.play()
+            window.location.reload(1);
+        }, 8000);
+        showAlert();
         
-   
-   
-        var base_url = $("#base_url").val();
-       
-        Swal.fire({
-            title:"<?php echo ($pendingorder[0]->order_id) ?> ",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Accept",
-            denyButtonText: `Decline`
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-               
-                $.ajax({
-                    type:"post",
-                    url:base_url+'updateorder-status/'+<?php echo ($pendingorder[0]->order_id) ?>,
-                    data:{
-                       id: <?php echo ($pendingorder[0]->order_id) ?>,
-                    },
-                    success: function(data) {
-                        //   $('.editbanner').html(data);
-                        //   $('#edit').modal('show');
-                      } 
-
-                });
-               
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
-        });
     });
+   
+    function showAlert() {
+
+        var availItems = new Array();
+
+        $(".orderproduct").each(function() {
+            var product = $(this).val();
+
+            availItems.push(product);
+            var base_url = $("#base_url").val();
+
+            Swal.fire({
+                title: "Order Id: <?php echo $pendingorder[0]->saleinvoice   ?>",
+                text: availItems,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Accept",
+                denyButtonText: `Decline`,
+
+            }).then((result) => {
+            
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    Swal.fire("saved", "", "info");
+                    $.ajax({
+                        type: "get",
+                        url: base_url + 'updateorder-status/' + <?php echo ($pendingorder[0]->order_id) ?>,
+                        data: {
+                            id: <?php echo ($pendingorder[0]->order_id) ?>,
+                        },
+                        success: function(data) {
+                            //   $('.editbanner').html(data);
+                            //   $('#edit').modal('show');
+                        }
+
+                    });
+
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        })
+
+        }
+    
 </script>
