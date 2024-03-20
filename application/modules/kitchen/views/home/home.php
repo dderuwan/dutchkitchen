@@ -1,12 +1,4 @@
-<script>
-    // window.onload = function () {
-    //     Swal.fire({
-    //         title: "The Internet?",
-    //         text: "That thing is still around?",
-    //         icon: "question"
-    //     });
-    // };
-</script>
+
 <div class="container-fluid">
     <div class="col-12">
         <div class="row">
@@ -143,7 +135,7 @@
                                                             </th>
 
                                                             <th class="text-center">
-                                                                <?php echo display('invoice_no'); ?>
+                                                                <?php echo display('saleinvoice_no'); ?>
                                                             </th>
 
                                                             <th class="text-center">
@@ -179,6 +171,56 @@
                                                     </thead>
 
                                                     <tbody>
+                                                    <?php if (!empty($orderlist)) { ?>
+
+                                                    <?php $sl = $pagenum+1; ?>
+
+                                                    <?php foreach ($orderlist as $items) { ?>
+
+                                                    <tr class="<?php echo ($sl & 1)?"odd gradeX":"even gradeC" ?>">
+
+                                                        <td><?php echo $sl; ?></td>
+
+                                                        <td><?php echo html_escape($items->po_no); ?></td>
+
+                                                        <td><?php echo html_escape($items->supName); ?></td>
+
+                                                        <td><?php html_escape($originalDate = $items->return_date);
+
+                                                                echo $newDate = date("d-M-Y", strtotime($originalDate));
+
+                                                                ?></td>
+
+                                                        <td><?php if($currency->position==1){echo html_escape($currency->curr_icon);}?>
+
+                                                            <?php echo html_escape($items->totalamount); ?>
+
+                                                            <?php if($currency->position==2){echo html_escape($currency->curr_icon);}?></td>
+
+                                                        <td class="center">
+
+                                                            <?php if($this->permission->method('purchase','read')->access()): ?>
+
+                                                            <a href="<?php echo base_url("purchase/returned-list/".html_escape($items->preturn_id)) ?>"
+
+                                                                class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="right"
+
+                                                                title="View"><i class="ti-eye" aria-hidden="true"></i></a>
+
+                                                            <?php endif; ?>
+
+                                                        </td>
+
+
+
+                                                    </tr>
+
+                                                    <?php $sl++; ?>
+
+                                                    <?php } ?>
+
+                                                    <?php } ?>
+
 
                                                     </tbody>
 

@@ -261,6 +261,21 @@ $route['purchase/invoice-return-list'] = "purchase/purchase/return_invoice";
 $route['purchase/returned-list/(:num)'] = "purchase/purchase/returnview/$1";
 
 
+//Kitchen
+
+$route['kitchen/kitchen-list'] = "kitchen/kitchen/index";
+
+// $route['purchase/purchase-create'] = "purchase/purchase/create";
+
+// $route['purchase/purchase-update/(:num)'] = "purchase/purchase/updateintfrm/$1";
+
+// $route['purchase/purchase-delete/(:num)'] = "purchase/purchase/delete/$1";
+
+// $route['purchase/purchase-return'] = "purchase/purchase/return_form";
+
+// $route['purchase/invoice-return-list'] = "purchase/purchase/return_invoice";
+
+// $route['purchase/returned-list/(:num)'] = "purchase/purchase/returnview/$1";
 
 //Reports
 

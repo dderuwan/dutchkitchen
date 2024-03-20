@@ -1,4 +1,6 @@
 <audio id="myAudio" src="<?php echo base_url() ?>assets/reception.mp3" ></audio>
+<!-- <p><a href="javascript:confirmRefresh();">Refresh Page</a></p>
+<img src="/pix/samples/4s.jpg" alt="Sample image"> -->
 <div class="row">
     <div class="col-12">
         <div class="row">
@@ -157,13 +159,20 @@
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/apexcharts.active.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // function confirmRefresh() {
+    // var okToRefresh = confirm("Do you really want to refresh the page?");
+    // if (okToRefresh)
+    //     {
+    //             setTimeout("location.reload(true);",1500);
+    //     }
+    // }
     var sound =  document.getElementById('myAudio');
  
     window.addEventListener("load", function() {
-        setTimeout(function() {
-            sound.play()
-            window.location.reload(1);
-        }, 8000);
+        // setTimeout(function() {
+        //     sound.play()
+        //     window.location.reload(1);
+        // }, 8000);
         showAlert();
         
     });

@@ -863,6 +863,66 @@ $fullname = $this->session->userdata('fullname');
                 ),
 
             );
+            
+            // // module name
+            $HmvcMenu2["kitchen"] = array(
+
+                //set icon
+            
+                "icon" => "<i class='ti-shopping-cart' aria-hidden='true'></i>
+
+                ",
+
+                "kitchen_item" => array(
+
+                    "controller" => "kitchen",
+
+                    "method" => "index",
+
+                    "url" => "kitchen/kitchen-list",
+
+                    "permission" => "read"
+
+                ),
+
+                // "purchase_add" => array(
+
+                //     "controller" => "purchase",
+
+                //     "method" => "create",
+
+                //     "url" => "purchase/purchase-create",
+
+                //     "permission" => "create"
+
+                // ),
+
+                // "purchase_return" => array(
+
+                //     "controller" => "purchase",
+
+                //     "method" => "return_form",
+
+                //     "url" => "purchase/purchase-return",
+
+                //     "permission" => "create"
+
+                // ),
+
+                // "return_invoice" => array(
+
+                //     "controller" => "purchase",
+
+                //     "method" => "return_invoice",
+
+                //     "url" => "purchase/invoice-return-list",
+
+                //     "permission" => "create"
+
+                // ),
+
+            );
+
 
             // module name
             
@@ -2119,11 +2179,9 @@ $fullname = $this->session->userdata('fullname');
 
                         if ($this->permission->module($moduleName)->access()) {
 
-
-
                             $this->permission->module($moduleName)->access();
 
-                            $allmenu = ['dashboard', 'accounts', 'customer', 'hrm', 'payment_setting', 'purchase', 'reports', 'room_facilities', 'room_reservation', 'room_setting', 'tax_management', 'units', 'addon', 'template'];
+                            $allmenu = ['dashboard', 'accounts', 'customer', 'hrm', 'payment_setting', 'purchase', 'reports', 'room_facilities', 'room_reservation', 'room_setting', 'tax_management', 'units', 'addon', 'template','kitchen'];
 
                             ?>
 
@@ -2238,7 +2296,7 @@ $fullname = $this->session->userdata('fullname');
                 <?php } ?>
             <li class="<?php echo (($this->uri->segment(1) == "kitchen") ? "mm-active" : null) ?>">
 
-                <a href="<?php echo base_url('kitchen/home') ?>"><i class="ti-bag"></i>
+                <a href="<?php echo base_url('kitchen/kitchen-list') ?>"><i class="ti-bag"></i>
 
                     <?php echo display('Kitchen') ?>
                 </a>
