@@ -99,7 +99,9 @@ class Home extends MX_Controller
 
 
 		$data['pendingorder'] = $this->home_model->pendingorder();
-	
+
+
+
 
 		$months = '';
 
@@ -481,15 +483,27 @@ class Home extends MX_Controller
 		}
 	}
 
-	public function updateorderstatus($id){
-		$customerorder=$this->db->select("*")->from('customer_order')->where('order_id',$id)->get()->row();
-		if($customerorder){
+	public function updateorderstatus($id)
+	{
+		$customerorder = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
+		if ($customerorder) {
 			$data = array(
 				'order_status' => 3
 			);
-			$this->db->where('order_id',$id)->update("customer_order", $data);
+			$this->db->where('order_id', $id)->update("customer_order", $data);
 			redirect('dashboard/home');
+		}
+	}
 
+	public function updatecancleorderstatus($id)
+	{
+		$customerorder = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
+		if ($customerorder) {
+			$data = array(
+				'order_status' => 5
+			);
+			$this->db->where('order_id', $id)->update("customer_order", $data);
+			redirect('dashboard/home');
 		}
 	}
 }

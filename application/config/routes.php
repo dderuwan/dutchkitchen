@@ -176,6 +176,8 @@ $route['profile-setting'] = "dashboard/home/setting";
 
 $route['updateorder-status/(:num)'] = "dashboard/home/updateorderstatus/$1";
 
+$route['updatcancleeorder-status/(:num)'] = "dashboard/home/updatecancleorderstatus/$1";
+
 
 $route['profile'] = "dashboard/home/profile";
 
