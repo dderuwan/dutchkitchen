@@ -98,7 +98,8 @@ class Home extends MX_Controller
 		$data['nextayorder'] = $this->home_model->nextdayorderlist();
 
 
-		$data['pendingorder'] = $this->home_model->pendingorder();
+		// $data['pendingorder'] = $this->home_model->pendingorder();
+
 
 
 
@@ -148,15 +149,10 @@ class Home extends MX_Controller
 			}
 
 			$monthly = $this->home_model->monthlybookingamount($syearformat, $month);
-
 			$odernum = $this->home_model->monthlybookingorder($syearformat, $month);
-
 			$oderpending = $this->home_model->monthlybookingpending($syearformat, $month);
-
 			$odercancel = $this->home_model->monthlybookingcancel($syearformat, $month);
-
 			$odertotal = $this->home_model->monthlybookingtotal($syearformat, $month);
-
 
 
 			$totalamount .= $monthly . ', ';
@@ -481,6 +477,32 @@ class Home extends MX_Controller
 
 			echo json_encode($data);
 		}
+	}
+	public function getpendingorder()
+	{
+
+
+
+		$orderid = $this->db->select('*')->from('customer_order')->where(['order_id >' => 300, 'order_status =' => 1])->order_by('order_id', 'DESC')->get()->result();
+
+		if (!empty($orderid)) {
+			$oid = $orderid[0]->order_id;
+			// 	// var_dump($lastqry[0]->order_id);
+			$orderdetails = $this->db->select('*')->from('order_menu')->where('order_id', $oid)->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID', 'left')->get()->result();
+
+			foreach ($orderdetails  as $value) :
+				$data[] = array(
+					'id'    =>  $value->order_id,
+					'pid'   => $value->ProductName,
+				);
+				var_dump($data);
+			// return $array;
+
+			echo json_encode($data);
+			endforeach;
+		}
+
+	
 	}
 
 	public function updateorderstatus($id)

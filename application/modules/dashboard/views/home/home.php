@@ -106,16 +106,7 @@
                         </div>
 
                     </div>
-                    <input type="hidden" id="oid" value="<?php echo $pendingorder[0]->order_id ?>">
                   
-                    <?php foreach ($pendingorder as $result) :
-                    ?>
-
-                        <input type="hidden" id="orderproduct" class="orderproduct" value="<?php echo $result->ProductName ?>">
-
-                    <?php
-                    endforeach;
-                    ?>
                 </div>
             </div>
 
@@ -168,84 +159,89 @@
     //     }
     // }
     var sound = document.getElementById('myAudio');
+
     window.addEventListener("load", function() {
-       
-        setInterval(function() {
-            showAlert();
-       
-        }, 8000);
-       
+        //    setInterval(function() {
+        showAlert();
+        // //    console.log("gjhihoi");
+        //  }, 1000);
     });
-   
-   
+
+
+    // function showAlert() {
+
+
+
+    //     Swal.fire({
+    //         title: "Order Id: <?php echo $pendingorder[0]->saleinvoice   ?>",
+    //         text: availItems,
+    //         showDenyButton: true,
+    //         showCancelButton: true,
+    //         confirmButtonText: "Accept",
+    //         denyButtonText: `Decline`,
+
+    //     }).then((result) => {
+
+    //         /* Read more about isConfirmed, isDenied below */
+    //         if (result.isConfirmed) {
+    //             Swal.fire("Order Is Ready", "", "info");
+    //             $.ajax({
+    //                 type: "get",
+    //                 url: base_url + 'updateorder-status/' + <?php echo ($pendingorder[0]->order_id) ?>,
+    //                 data: {
+    //                     id: <?php echo ($pendingorder[0]->order_id) ?>,
+    //                 },
+    //                 success: function(data) {
+    //                     //   $('.editbanner').html(data);
+    //                     //   $('#edit').modal('show');
+    //                     window.location.reload();
+    //                 }
+
+    //             });
+
+    //         } else if (result.isDenied) {
+
+    //             Swal.fire("Order Is Cancle", "", "info");
+    //             $.ajax({
+    //                 type: "get",
+    //                 url: base_url + 'updatcancleeorder-status/' + <?php echo ($pendingorder[0]->order_id) ?>,
+    //                 data: {
+    //                     id: <?php echo ($pendingorder[0]->order_id) ?>,
+    //                 },
+    //                 success: function(data) {
+    //                     //   $('.editbanner').html(data);
+    //                     //   $('#edit').modal('show');
+    //                     window.location.reload();
+    //                 }
+
+    //             });
+    //         }
+    //     });
+
+
+
+
+
+    // }
+
     function showAlert() {
-       
-        if (($('#oid').val()) > 300  ) {
-        
-                sound.play()
-               
-          
-            var availItems = new Array();
-
-            $(".orderproduct").each(function() {
-                var product = $(this).val();
-
-                availItems.push(product);
-                var base_url = $("#base_url").val();
-
-                Swal.fire({
-                    title: "Order Id: <?php echo $pendingorder[0]->saleinvoice   ?>",
-                    text: availItems,
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: "Accept",
-                    denyButtonText: `Decline`,
-
-                }).then((result) => {
-
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        Swal.fire("Order Is Ready", "", "info");
-                        $.ajax({
-                            type: "get",
-                            url: base_url + 'updateorder-status/' + <?php echo ($pendingorder[0]->order_id) ?>,
-                            data: {
-                                id: <?php echo ($pendingorder[0]->order_id) ?>,
-                            },
-                            success: function(data) {
-                                //   $('.editbanner').html(data);
-                                //   $('#edit').modal('show');
-                                window.location.reload();
-                            }
-
-                        });
-
-                    } else if (result.isDenied) {
-                   
-                        Swal.fire("Order Is Cancle", "", "info");
-                        $.ajax({
-                            type: "get",
-                            url: base_url + 'updatcancleeorder-status/' + <?php echo ($pendingorder[0]->order_id) ?>,
-                            data: {
-                                id: <?php echo ($pendingorder[0]->order_id) ?>,
-                            },
-                            success: function(data) {
-                                //   $('.editbanner').html(data);
-                                //   $('#edit').modal('show');
-                                window.location.reload();
-                            }
-
-                        });
-                    }
-                });
-            })
-
-        } else {
-           
-        }
-
-        
+        var base_url = $("#base_url").val();
+        $.ajax({
+            datatype: "json",
+            url: base_url + 'dashboard/getpendingorder',
+            
+            success: function(res) {
+            let result = JSON.parse(res);
+            console.log(result[0].ProductName);
+            
+              
 
 
+
+
+
+            },
+
+        })
     }
 </script>

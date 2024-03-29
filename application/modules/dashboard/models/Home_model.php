@@ -459,6 +459,7 @@ class Home_model extends CI_Model
 
 		$query = $this->db->get();
 
+
 		if ($query->num_rows() > 0) {
 
 			return $query->result();
@@ -506,6 +507,7 @@ class Home_model extends CI_Model
 		$this->db->join('rest_table', 'customer_order.table_no=rest_table.tableid', 'left');
 
 		$this->db->where('order_status', 1);
+
 
 		$this->db->order_by('saleinvoice', 'DESC');
 
@@ -824,22 +826,14 @@ class Home_model extends CI_Model
 	public function pendingorder()
 
 	{
-		$this->db->select('customer_order.*,customerinfo.firstname,item_foods.ProductName,order_menu.order_id as oid');
-
+		$this->db->select('customer_order.*,item_foods.ProductName,order_menu.order_id as oid');
 		$this->db->from('customer_order');
-
-		$this->db->join('customerinfo', 'customer_order.customer_id=customerinfo.customerid', 'left');
-
-		$this->db->join('order_menu', 'customer_order.order_id=order_menu.order_id', 'left');
-		$this->db->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID', 'left');
-
-		$this->db->where('order_status' ,1);
-	
-
-		$this->db->order_by('saleinvoice', 'DESC');
-
+		$this->db->join('order_menu', 'customer_order.order_id=order_menu.order_id');
+		$this->db->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID');
+		$this->db->where('order_status', 1);
+		$this->db->limit(1);
 		$query = $this->db->get();
-
+		// var_dump($this->db->last_query());
 		if ($query->num_rows() > 0) {
 
 			return $query->result();
