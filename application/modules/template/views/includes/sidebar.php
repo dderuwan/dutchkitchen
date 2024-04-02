@@ -909,6 +909,17 @@ $fullname = $this->session->userdata('fullname');
                     "permission" => "create"
     
                 ),
+                "recepe_list" => array(
+
+                    "controller" => "kot",
+        
+                    "method" => "index",
+        
+                    "url" => "kot/recepe_list",
+        
+                    "permission" => "index"
+        
+                ),
             );
 
 

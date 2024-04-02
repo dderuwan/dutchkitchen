@@ -6,25 +6,24 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Kot_model extends CI_Model
 {
+	private $table = 'recepe';
 
-
-
-	private $table = 'customer_order';
-
-	public function item_dropdown(){
+	public function item_dropdown()
+	{
 		$data = $this->db->select("*")->from('item_foods')->get()->result();
 		$list[''] = 'Select ' . display('item_name');
 		if (!empty($data)) {
-			foreach ($data as $value) 
+			foreach ($data as $value)
 				$list[$value->ProductsID] = $value->ProductName;
-			
-				return $list;
+
+			return $list;
 		} else {
 
 			return false;
 		}
 	}
-	public function product_dropdown(){
+	public function product_dropdown()
+	{
 		$data = $this->db->select("*")->from('products')->get()->result();
 		$list[''] = 'Select ' . display('product_name');
 		if (!empty($data)) {
@@ -37,50 +36,34 @@ class Kot_model extends CI_Model
 	}
 
 	public function countlist()
-
 	{
-		$this->db->select('customer_order.*,customerinfo.firstname');
-
-		$this->db->from($this->table);
-
-		$this->db->join('customerinfo', 'customer_order.customer_id = customerinfo.customerid', 'left');
-
+		$this->db->select('recepe.*,item_foods.ProductName');
+		$this->db->from('recepe');
+		$this->db->join('item_foods', 'item_foods.ProductsID  = recepe.item_id', 'left');
 		$query = $this->db->get();
 
-
 		if ($query->num_rows() > 0) {
-
 			return $query->num_rows();
 		}
-
 		return false;
 	}
 
 	public function read()
-
 	{
-		$this->db->select('customer_order.*,customerinfo.firstname');
-
+		$this->db->select('recepe.*,item_foods.ProductName');
 		$this->db->from($this->table);
-
-		$this->db->join('customerinfo', 'customer_order.customer_id = customerinfo.customerid', 'left');
-
-		$this->db->order_by('order_id', 'desc');
-
+		$this->db->join('item_foods', 'item_foods.ProductsID   = recepe.item_id', 'left');
+		$this->db->order_by('id', 'desc');
 		$query = $this->db->get();
-
 		if ($query->num_rows() > 0) {
-
 			return $query->result();
 		}
-
 		return false;
 	}
 
 	//ingredient Dropdown
 
 	public function ingrediant_dropdown()
-
 	{
 
 		$data = $this->db->select("*")
@@ -169,31 +152,30 @@ class Kot_model extends CI_Model
 
 	public function create()
 	{
-	
+
 		$saveid = $this->session->userdata('id');
 		$p_id = $this->input->post('product_id', TRUE);
 		$quantity = $this->input->post('product_quantity', TRUE);
 
-		$data= array(
+		$data = array(
 			'item_id' => $this->input->post('foodid', TRUE)
 		);
-		$this->db->insert('recepe',$data);
+		$this->db->insert('recepe', $data);
 		$returnrecepeid = $this->db->insert_id();
 
 		for ($i = 0, $n = count($p_id); $i < $n; $i++) {
 
 			$product_quantity = $quantity[$i];
 			$product_id = $p_id[$i];
-		
+
 			$data1 = array(
-					'rece_id' 		=> $returnrecepeid,
-					'product_id'	=>	$product_id,
-					'quantity'		=>	$product_quantity,
+				'rece_id' 		=> $returnrecepeid,
+				'product_id'	=>	$product_id,
+				'quantity'		=>	$product_quantity,
 			);
 
 			if (!empty($product_quantity)) {
 				$this->db->insert('recepe_details', $data1);
-				
 			}
 		}
 
@@ -236,44 +218,34 @@ class Kot_model extends CI_Model
 		return true;
 	}
 
-
-
-	public function delete($id = null)
-
+	public function findByReceId($id = null)
 	{
+		return $this->db->select('*')->from('recepe')->where('id', $id)->join('item_foods', 'recepe.item_id=item_foods.ProductsID', 'left')->get()->row();
+		
+	}
+	public function recepeiteminfo($id){
+		$this->db->select('recepe_details.*,products.id,products.product_name');
+		$this->db->from('recepe_details');
+		$this->db->join('products','recepe_details.product_id=products.id','left');
+		$this->db->where('rece_id',$id);
+		$query = $this->db->get();
+		if (!empty($query)) {
+			return $query->result();	
+		}
+		return false;
 
-		$this->db->where('purID', $id)
-
-			->delete($this->table);
-
-
-
-		$this->db->where('purchaseid', $id)
-
-			->delete('purchase_details');
-
-
-
+	 }
+	public function delete($id = null){
+		$this->db->where('purID', $id)->delete($this->table);
+		$this->db->where('purchaseid', $id)->delete('purchase_details');
 		if ($this->db->affected_rows()) {
-
 			return true;
 		} else {
-
 			return false;
 		}
 	}
 
-
-
-
-
-
-
-
-
-	public function update()
-
-	{
+	public function update(){
 
 		$id = $this->input->post('purID', TRUE);
 
@@ -645,18 +617,18 @@ class Kot_model extends CI_Model
 
 
 
-	public function findById($id = null)
+	// public function findById($id = null)
 
-	{
+	// {
 
-		return $this->db->select("*")->from($this->table)
+	// 	return $this->db->select("*")->from($this->table)
 
-			->where('purID', $id)
+	// 		->where('purID', $id)
 
-			->get()
+	// 		->get()
 
-			->row();
-	}
+	// 		->row();
+	// }
 
 
 
@@ -1067,45 +1039,28 @@ class Kot_model extends CI_Model
 	public function findByreturnId($id = null)
 
 	{
-
 		$this->db->select('purchase_return.*,supplier.supName');
-
 		$this->db->from('purchase_return');
-
 		$this->db->join('supplier', 'purchase_return.supplier_id = supplier.supid', 'left');
-
 		$this->db->where('preturn_id', $id);
-
 		$query = $this->db->get();
-
 		if ($query->num_rows() > 0) {
-
 			return $query->row();
 		}
-
 		return false;
 	}
 
 	public function returniteminfo($id)
 	{
-
 		$this->db->select('purchase_return_details.*,products.product_name,unit_of_measurement.uom_short_code');
-
 		$this->db->from('purchase_return_details');
-
 		$this->db->join('products', 'purchase_return_details.product_id=products.id', 'left');
-
 		$this->db->join('unit_of_measurement', 'unit_of_measurement.id = products.uom_id', 'inner');
-
 		$this->db->where('preturn_id', $id);
-
 		$query = $this->db->get();
-
 		if ($query->num_rows() > 0) {
-
 			return $query->result();
 		}
-
 		return false;
 	}
 

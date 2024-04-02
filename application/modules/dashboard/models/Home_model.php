@@ -830,7 +830,7 @@ class Home_model extends CI_Model
 		$this->db->from('customer_order');
 		$this->db->join('order_menu', 'customer_order.order_id=order_menu.order_id');
 		$this->db->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID');
-		$this->db->where('order_status', 1);
+		$this->db->where(['order_status', 1,'order_id >',300]);
 		$this->db->limit(1);
 		$query = $this->db->get();
 		// var_dump($this->db->last_query());

@@ -1,3 +1,19 @@
+function viewinfo(id){
+    'use strict';
+       var myurl =$("#url").val()+'/'+id;
+        var dataString = "id="+id;
+         $.ajax({
+         type: "GET",
+         url: myurl,
+         data: dataString,
+         success: function(data) {
+            console.log(data);
+             $('.viewinfo').html(data);
+              $('select').selectpicker();
+             $('#view').modal('show');
+         } 
+    });
+    }
 function editinfo(id){
 	'use strict';
 	   var geturl=$("#url_"+id).val();

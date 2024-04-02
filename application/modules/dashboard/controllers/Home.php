@@ -479,30 +479,22 @@ class Home extends MX_Controller
 		}
 	}
 	public function getpendingorder()
+
+
 	{
-
-
-
+		// $pendingorder= $this->home_model->pendingorder();
+		// echo json_encode($pendingorder);
 		$orderid = $this->db->select('*')->from('customer_order')->where(['order_id >' => 300, 'order_status =' => 1])->order_by('order_id', 'DESC')->get()->result();
-
 		if (!empty($orderid)) {
 			$oid = $orderid[0]->order_id;
 			// 	// var_dump($lastqry[0]->order_id);
 			$orderdetails = $this->db->select('*')->from('order_menu')->where('order_id', $oid)->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID', 'left')->get()->result();
 
-			foreach ($orderdetails  as $value) :
-				$data[] = array(
-					'id'    =>  $value->order_id,
-					'pid'   => $value->ProductName,
-				);
-				var_dump($data);
-			// return $array;
+			// foreach ($orderdetails  as $value)
 
-			echo json_encode($data);
-			endforeach;
+
+				echo json_encode($oid);
 		}
-
-	
 	}
 
 	public function updateorderstatus($id)

@@ -285,7 +285,7 @@ $route['kitchen/kitchen-list'] = "kitchen/kitchen/index";
 //Kot
 
 $route['kot/add_product'] = "kot/kot/create";
-
+$route['kot/recepe_list'] = "kot/kot/index";
 // $route['purchase/purchase-create'] = "purchase/purchase/create";
 
 // $route['purchase/purchase-update/(:num)'] = "purchase/purchase/updateintfrm/$1";

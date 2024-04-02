@@ -1,38 +1,65 @@
 <?php
 
 defined('BASEPATH') or exit('No direct script access allowed');
-
-
-
 class Kot extends MX_Controller
 {
-
-
-
 	public function __construct()
-
 	{
-
 		parent::__construct();
-
 		$this->load->model(array(
-
 			'kot_model'
-
 		));
-
 		$this->load->library('cart');
 	}
-
-
-
 	public function index($id = null)
-
 	{
 		//  $this->permission->method('kitchen','read')->redirect();
-		$data['title']    = display('Order List');
+		$data['title']    = display('recepe_list');
+		#pagination starts
+		$config["base_url"] = base_url('kot/kot/index');
+		 $config["total_rows"]  = $this->kot_model->countlist();
+		
+		$config["per_page"]    = 15;
+		$config["uri_segment"] = 4;
+		$config["last_link"] = "Last";
+		$config["first_link"] = "First";
+		$config['next_link'] = 'Next';
+		$config['prev_link'] = 'Prev';
+		$config['full_tag_open'] = "<ul class='pagination col-xs pull-right'>";
+		$config['full_tag_close'] = "</ul>";
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = "<li class='disabled'><li class='active'><a href='#'>";
+		$config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+		$config['next_tag_open'] = "<li>";
+		$config['next_tag_close'] = "</li>";
+		$config['prev_tag_open'] = "<li>";
+		$config['prev_tagl_close'] = "</li>";
+		$config['first_tag_open'] = "<li>";
+		$config['first_tagl_close'] = "</li>";
+		$config['last_tag_open'] = "<li>";
+		$config['last_tagl_close'] = "</li>";
+
+		/* ends of bootstrap */
+		$this->pagination->initialize($config);
+		$page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+		$data["recepelist"] = $this->kot_model->read();
+		$data["links"] = $this->pagination->create_links();
+		$data['pagenum'] = $page;
+		// $data['items']   = $this->kot_model->ingrediant_dropdown();
+		$settinginfo=$this->kot_model->settinginfo();
+		$data['currency']=$this->kot_model->currencysetting($settinginfo->currency);
+
+		// 	if(!empty($id)) {
+
+		// 	$data['title'] = display('order_edit');
+
+		// 	$data['intinfo']   = $this->kitchen_model->findById($id);
+
+		//    }
+		// 	#pagination ends
 		$data['module'] = "kot";
-		$data['page']   = "addproduct";
+		$data['page']   = "recepelist";
 		echo Modules::run('template/layout', $data);
 	}
 	public function create($id = null)
@@ -45,6 +72,16 @@ class Kot extends MX_Controller
 		$data['page']   = "addproduct";
 		echo Modules::run('template/layout', $data);
 	}
+	public function viewintfrm($id){
+		// $this->permission->method('room_facilities','update')->redirect();
+		$data['title'] = display('view_recepe');
+		$data['recepeinfo']   = $this->kot_model->findByReceId($id);
+		$data['recepedetails']   = $this->kot_model->recepeiteminfo($id);
+		$data['module'] = "kot";  
+		$data['page']   = "recepelist";
+		// echo Modules::run('template/layout', $data);
+		 $this->load->view('kot/recepeview', $data);   
+	   }
 
 	public function recepe_entry()
 	{
@@ -56,18 +93,15 @@ class Kot extends MX_Controller
 			redirect($_SERVER['HTTP_REFERER']);
 		}
 		// $this->permission->method('kot','create')->redirect();
-		if ($this->kot_model->create()) { 
+		if ($this->kot_model->create()) {
 
 			$this->session->set_flashdata('message', display('save_successfully'));
 
 			redirect('kot/add_product');
-
 		} else {
 
 			$this->session->set_flashdata('exception',  display('please_try_again'));
-
 		}
-
 	}
 
 	public function recepeproduct()

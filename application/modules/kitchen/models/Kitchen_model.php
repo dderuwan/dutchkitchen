@@ -1326,5 +1326,47 @@ public function getinvoice($id){
 
 	 }
 
+	 public function details($id)
+	 {
+		 
+		 $this->db->select('customer_order.*,customerinfo.firstname as cfname');
+		 $this->db->from('customer_order');
+		 $this->db->join('customerinfo','customer_order.customer_id = customerinfo.customerid','left');
+		 $this->db->where('customer_order.order_id',$id);
+		 $query = $this->db->get();
+		 if ($query->num_rows() > 0) {
+			  return $query->row();    
+		 }
+		 return false;
+	 
+	 }
+	public function orderinfo($oid){
+		$this->db->select('order_menu.*,item_foods.ProductName');
+		$this->db->from('order_menu');
+		$this->db->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID','left');
+		$this->db->where('order_menu.order_id',$oid);
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
+			return $query->result();    
+		}
+		return false;
+	}
+	
+	public function commonsettinginfo()
+	{ 
+		return $this->db->select("*")->from('common_setting')
+			->get()
+			->row();
+	}
+	public function getiteminfo($id = null)
+	{ 
+		$this->db->select('*');
+		$this->db->from('item_foods');
+		$this->db->where('ProductsID',$id);
+		$query = $this->db->get();
+		$itemlist=$query->row();
+		return $itemlist;
+	}
+
 }
 

@@ -351,89 +351,41 @@ class Kitchen extends MX_Controller {
 	  redirect("purchase/purchase-list"); 
 
 	   }  
-
-		
-
 	   }
 
  public function getlist($id){
-
 	 	 $suplierinfo=$this->purchase_model->suplierinfo($id);
-
 		 echo json_encode($suplierinfo);
-
 	 }
-
     public function delete($id = null)
-
     {
-
         $this->permission->module('purchase','delete')->redirect();
-
-		
-
 		if ($this->purchase_model->delete($id)) {
-
 			#set success message
-
 			$this->session->set_flashdata('message',display('delete_successfully'));
-
 		} else {
-
 			#set exception message
-
 			$this->session->set_flashdata('exception',display('please_try_again'));
-
 		}
-
 		redirect('purchase/purchase-list');
-
     }
-
 	 public function addproduction($id = null)
-
     {
-
 	  $data['title'] = display('purchase_add');
-
 	   $saveid=$this->session->userdata('supid');
-
 	  $data['intinfo']="";
-
-	 
-
 	   $data['item']   = $this->purchase_model->item_dropdown();
-
-		
-
 	   $data['module'] = "purchase";
-
 	   $data['page']   = "addproduction";   
-
 	   echo Modules::run('template/layout', $data); 
-
     }
-
-	
-
 	public function production_entry(){
-
 		$this->form_validation->set_rules('foodid','Food Name','required');
-
 		$this->form_validation->set_rules('purchase_date','Purchase Date'  ,'required');
-
 		$this->form_validation->set_rules('pro_qty','Production Quantity'  ,'required');
-
 	    $saveid=$this->session->userdata('id'); 
-
-		
-
 	   if ($this->form_validation->run()) { 
-
 		$this->permission->method('purchase','create')->redirect();
-
-		
-
 		if ($this->purchase_model->makeproduction()) { 
 
 		 $this->session->set_flashdata('message', display('save_successfully'));
@@ -667,6 +619,30 @@ class Kitchen extends MX_Controller {
 	    echo Modules::run('template/layout', $data);  
 
 	   }
+
+	   public function viewdetailsprint($id,$pdf=null){
+		 $data['orderdetails']=$this->kitchen_model->details($id);
+			// var_dump($details);
+	
+		 $data['orderinfo']   = $this->kitchen_model->orderinfo($id);
+		
+		// $data['paymentinfo']   = $this->kitchen_model->paymentinfo($details->bookedid);
+		// $data['storeinfo']=$this->kitchen_model->storeinfo();
+		// $data['taxinfo']=$this->kitchen_model->taxinfo();
+		// $data['btaxinfo']=$this->kitchen_model->btaxinfo($id);
+		// $data['commominfo']=$this->kitchen_model->commoninfo();
+		$settinginfo			   = $this->kitchen_model->settinginfo();
+		$data['settinginfo']    = $settinginfo;
+		$data['storeinfo']      = $settinginfo;
+		$data['currency']=$this->kitchen_model->currencysetting($data['storeinfo']->currency);  
+		$data['comsettinginfo'] = $this->kitchen_model->commonsettinginfo();
+		$data['module'] 		   = "kitchen";
+		$data['page']   		   = "orderlistpdf";   
+		$view  				   = $this->load->view('orderlistpdf',$data,true);
+		echo $view;exit;
+		  
+		 
+	}
 
  
 
