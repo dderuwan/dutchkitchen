@@ -1,3 +1,6 @@
+<audio id="myAudio" src="<?php echo base_url() ?>assets/reception.mp3"></audio>
+<!-- <p><a href="javascript:confirmRefresh();">Refresh Page</a></p>
+<img src="/pix/samples/4s.jpg" alt="Sample image"> -->
 <div class="row">
     <div class="col-12">
         <div class="row">
@@ -16,6 +19,7 @@
                         </div>
 
                         <p class="card-category text-uppercase fs-10 font-weight-bold text-muted">
+
 
                             Pending Orders
                         </p>
@@ -102,6 +106,7 @@
                         </div>
 
                     </div>
+
                 </div>
             </div>
 
@@ -146,46 +151,82 @@
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/apexcharts.active.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // function loadswal() {
-    //     Swal.fire({
-    //         title: "7 ORDERS",
-    //         text: "PENDING ",
-    //         icon: "info"
-    //     });
+    // function confirmRefresh() {
+    // var okToRefresh = confirm("Do you really want to refresh the page?");
+    // if (okToRefresh)
+    //     {
+    //             setTimeout("location.reload(true);",1500);
+    //     }
     // }
+  
 
-    $(document).ready(function() {
-        
-   
-   
-        var base_url = $("#base_url").val();
+     window.addEventListener("load", function() {
+        showAlert(); 
+     });
+    var sound = document.getElementById('myAudio');
+
+    // setInterval(function() {
        
-        Swal.fire({
-            title:"<?php echo ($pendingorder[0]->order_id) ?> ",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Accept",
-            denyButtonText: `Decline`
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-               
-                $.ajax({
-                    type:"post",
-                    url:base_url+'updateorder-status/'+<?php echo ($pendingorder[0]->order_id) ?>,
-                    data:{
-                       id: <?php echo ($pendingorder[0]->order_id) ?>,
-                    },
-                    success: function(data) {
-                        //   $('.editbanner').html(data);
-                        //   $('#edit').modal('show');
-                      } 
+    //   }, 2000);
+    function showAlert() {
+        var base_url = $("#base_url").val();
+        $.ajax({
+            datatype: "json",
+            url: base_url + 'dashboard/getpendingorder',
+            success: function(res) {
+               if(res){
+                // sound.play();
+                let data = JSON.parse(res);
+                Swal.fire({
+                    title: data,
+                    showDenyButton: true,
+                    confirmButtonText: "Accept",
+                    denyButtonText: `Decline`,
 
+                }).then((result) => {
+
+                    /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            Swal.fire("Order Is Confirm", "", "info");
+                            $.ajax({
+                                type: "get",
+                                url: base_url + 'updateorder-status/' +data,
+                                data: {
+                                    id: data,
+                                },
+                                success: function(data) {
+                                    //   $('.editbanner').html(data);
+                                    //   $('#edit').modal('show');
+                                    // window.location.reload();
+                                }
+
+                            });
+
+                        } else if (result.isDenied) {
+
+                            Swal.fire("Order Is Cancle", "", "info");
+                            $.ajax({
+                                type: "get",
+                                url: base_url + 'updatcancleeorder-status/' + data,
+                                data: {
+                                    id: data,
+                                },
+                                success: function(data) {
+                                    //   $('.editbanner').html(data);
+                                    //   $('#edit').modal('show');
+                                    window.location.reload();
+                                }
+
+                            });
+                        }
                 });
                
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
-        });
-    });
+               }
+              
+           
+
+            },
+
+        })
+    }
 </script>

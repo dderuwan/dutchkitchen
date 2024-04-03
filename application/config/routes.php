@@ -176,9 +176,14 @@ $route['profile-setting'] = "dashboard/home/setting";
 
 $route['updateorder-status/(:num)'] = "dashboard/home/updateorderstatus/$1";
 
+$route['updatcancleeorder-status/(:num)'] = "dashboard/home/updatecancleorderstatus/$1";
+
+
 $route['profile'] = "dashboard/home/profile";
 
 $route['autoupdate'] = "dashboard/autoupdate";
+
+$route['dashboard/getpendingorder'] = "dashboard/home/getpendingorder";
 
 //module
 
@@ -260,6 +265,39 @@ $route['purchase/invoice-return-list'] = "purchase/purchase/return_invoice";
 $route['purchase/returned-list/(:num)'] = "purchase/purchase/returnview/$1";
 
 
+
+//Kitchen
+
+$route['kitchen/kitchen-list'] = "kitchen/kitchen/index";
+
+// $route['purchase/purchase-create'] = "purchase/purchase/create";
+
+// $route['purchase/purchase-update/(:num)'] = "purchase/purchase/updateintfrm/$1";
+
+// $route['purchase/purchase-delete/(:num)'] = "purchase/purchase/delete/$1";
+
+// $route['purchase/purchase-return'] = "purchase/purchase/return_form";
+
+// $route['purchase/invoice-return-list'] = "purchase/purchase/return_invoice";
+
+// $route['purchase/returned-list/(:num)'] = "purchase/purchase/returnview/$1";
+
+//Kot
+
+$route['kot/add_product'] = "kot/kot/create";
+$route['kot/recepe_list'] = "kot/kot/index";
+$route['kot/kot-delete/(:num)'] = "kot/kot/delete/$1";
+// $route['purchase/purchase-create'] = "purchase/purchase/create";
+
+// $route['purchase/purchase-update/(:num)'] = "purchase/purchase/updateintfrm/$1";
+
+// $route['purchase/purchase-delete/(:num)'] = "purchase/purchase/delete/$1";
+
+// $route['purchase/purchase-return'] = "purchase/purchase/return_form";
+
+// $route['purchase/invoice-return-list'] = "purchase/purchase/return_invoice";
+
+// $route['purchase/returned-list/(:num)'] = "purchase/purchase/returnview/$1";
 
 //Reports
 

@@ -98,10 +98,9 @@ class Home extends MX_Controller
 		$data['nextayorder'] = $this->home_model->nextdayorderlist();
 
 
+		// $data['pendingorder'] = $this->home_model->pendingorder();
 
 
-		$data['pendingorder'] = $this->home_model->pendingorder();
-	
 
 
 
@@ -150,15 +149,10 @@ class Home extends MX_Controller
 			}
 
 			$monthly = $this->home_model->monthlybookingamount($syearformat, $month);
-
 			$odernum = $this->home_model->monthlybookingorder($syearformat, $month);
-
 			$oderpending = $this->home_model->monthlybookingpending($syearformat, $month);
-
 			$odercancel = $this->home_model->monthlybookingcancel($syearformat, $month);
-
 			$odertotal = $this->home_model->monthlybookingtotal($syearformat, $month);
-
 
 
 			$totalamount .= $monthly . ', ';
@@ -484,18 +478,52 @@ class Home extends MX_Controller
 			echo json_encode($data);
 		}
 	}
+	public function getpendingorder()
+	{
+		// $pendingorder= $this->home_model->pendingorder();
+		// echo json_encode($pendingorder);
+		$orderid = $this->db->select('*')->from('customer_order')->where(['order_id >' => 300, 'order_status =' => 1])->order_by('order_id', 'DESC')->get()->result();
+		if (!empty($orderid)) {
+			$oid = $orderid[0]->order_id;
+			// 	// var_dump($lastqry[0]->order_id);
+			$orderdetails = $this->db->select('*')->from('order_menu')->where('order_id', $oid)->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID', 'left')->get()->result();
 
-	public function updateorderstatus($id){
-		
+			// foreach ($orderdetails  as $value)
+			echo json_encode($oid);
+		}
+	}
 
-		$customerorder=$this->db->select("*")->from('customer_order')->where('order_id',$id)->get()->row();
-		if($customerorder){
+	public function updateorderstatus($id)
+	{
+		$customerorder = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
+		if ($customerorder) {
 			$data = array(
 				'order_status' => 3
 			);
-			$this->db->where('order_id',$id)->update("customer_order", $data);
-			redirect('dashboard/home');
+			// update status
+			$this->db->where('order_id', $id)->update("customer_order", $data);
+			$orderdetails = $this->db->select('*')->from('order_menu')->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')->where('order_menu.order_id', $id)->get()->result();
+			// update stock
+			foreach ($orderdetails as $details) :
+				$stockupdate = array(
+					'stock' =>  $details->stock - $details->quantity,
+					'used' => $details->used +  $details->quantity
+				);
+				$this->db->where('id',  $details->product_id)->update("products", $stockupdate);
+			endforeach;
+			 redirect('dashboard/home');
+		}
+	}
 
+	public function updatecancleorderstatus($id)
+	{
+		$customerorder = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
+		if ($customerorder) {
+			$data = array(
+				'order_status' => 5
+			);
+			$this->db->where('order_id', $id)->update("customer_order", $data);
+			redirect('dashboard/home');
 		}
 	}
 }
