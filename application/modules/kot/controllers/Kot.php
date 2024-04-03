@@ -234,7 +234,7 @@ class Kot extends MX_Controller
 			#set exception message
 			$this->session->set_flashdata('exception', display('please_try_again'));
 		}
-		redirect('kot/receplist');
+		redirect('kot/recepe_list');
 	}
 
 	public function addproduction($id = null)
