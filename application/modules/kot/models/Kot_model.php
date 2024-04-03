@@ -158,7 +158,9 @@ class Kot_model extends CI_Model
 		$quantity = $this->input->post('product_quantity', TRUE);
 
 		$data = array(
-			'item_id' => $this->input->post('foodid', TRUE)
+			'item_id' => $this->input->post('foodid', TRUE),
+			'rece_date' => date('Ymd'),
+			'status' => 1
 		);
 		$this->db->insert('recepe', $data);
 		$returnrecepeid = $this->db->insert_id();
@@ -178,43 +180,6 @@ class Kot_model extends CI_Model
 				$this->db->insert('recepe_details', $data1);
 			}
 		}
-
-		// Acc transaction
-
-		// $recv_id = date('YmdHis');
-
-		// $invoice = $this->input->post('invoice_no', TRUE);
-
-		// $narration = 'PO Receive Receive No ' . $recv_id;
-
-		// $g_total_price = $this->input->post('grand_total_price', TRUE);
-
-		// $supinfo = $this->db->select('*')->from('supplier')->where('supid', $this->input->post('suplierid', TRUE))->get()->row();
-
-		// $total_amount = $supinfo->total_amount + $g_total_price;
-
-		// $due_amount = $supinfo->due_amount + $g_total_price;
-
-		// $this->db->where("supid", $this->input->post('suplierid', TRUE))->update("supplier", array("total_amount" => $total_amount, "due_amount" => $due_amount));
-
-		// transaction($invoice, 'PO', $newdate, 10107, $narration, $g_total_price, 0, 0, 1, $saveid, $newdate, 1);
-
-
-
-		// $supinfo = $this->db->select('*')->from('supplier')->where('supid', $this->input->post('suplierid', TRUE))->get()->row();
-
-		// $sup_head = $supinfo->suplier_code . '-' . $supinfo->supName;
-
-		// $sup_coa = $this->db->select('*')->from('acc_coa')->where('HeadName', $sup_head)->get()->row();
-
-		// //  Supplier credit
-
-		// $narration = 'PO received For PO No.' . $this->input->post('invoice_no', TRUE) . ' Receive No.' . $recv_id;
-
-		// transaction($invoice, 'PO', $newdate, $sup_coa->HeadCode, $narration, 0, $g_total_price, 0, 1, $saveid, $newdate, 1);
-
-
-
 		return true;
 	}
 
@@ -236,8 +201,8 @@ class Kot_model extends CI_Model
 
 	 }
 	public function delete($id = null){
-		$this->db->where('purID', $id)->delete($this->table);
-		$this->db->where('purchaseid', $id)->delete('purchase_details');
+		$this->db->where('id', $id)->delete('recepe');
+		$this->db->where('rece_id', $id)->delete('recepe_details');
 		if ($this->db->affected_rows()) {
 			return true;
 		} else {
@@ -659,6 +624,7 @@ class Kot_model extends CI_Model
 		$this->db->select('*');
 		$this->db->from('products');
 		$this->db->where('is_active', 1);
+		$this->db->where('stock >',0);
 		$this->db->like('product_name', $product_name);
 		$query = $this->db->get();
 		if ($query->num_rows() > 0) {

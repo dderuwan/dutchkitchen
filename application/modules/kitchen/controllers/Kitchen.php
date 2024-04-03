@@ -621,30 +621,41 @@ class Kitchen extends MX_Controller {
 	   }
 
 	   public function viewdetailsprint($id,$pdf=null){
-		 $data['orderdetails']=$this->kitchen_model->details($id);
-			// var_dump($details);
-	
-		 $data['orderinfo']   = $this->kitchen_model->orderinfo($id);
-		
-		// $data['paymentinfo']   = $this->kitchen_model->paymentinfo($details->bookedid);
-		// $data['storeinfo']=$this->kitchen_model->storeinfo();
-		// $data['taxinfo']=$this->kitchen_model->taxinfo();
-		// $data['btaxinfo']=$this->kitchen_model->btaxinfo($id);
-		// $data['commominfo']=$this->kitchen_model->commoninfo();
-		$settinginfo			   = $this->kitchen_model->settinginfo();
+		$saveid		  =$this->session->userdata('id');
+		$isadmin		  =$this->session->userdata('user_type');
+		$customerorder =$this->kitchen_model->readrow('*', 'customer_order', array('order_id' => $id));
+
+		$data['orderinfo']  	= $customerorder;
+		$data['customerinfo']   = $this->kitchen_model->readrow('*', 'customerinfo', array('customerid' => $customerorder->customer_id));
+		$data['iteminfo']       = $this->kitchen_model->customerorder($id);
+		$data['billinfo']	  	= $this->kitchen_model->billinfo($id);
+		$data['cashierinfo']    = $this->kitchen_model->readrow('*', 'user', array('id' => $data['billinfo']->create_by));
+		$data['tableinfo']	   	= $this->kitchen_model->readrow('*', 'rest_table', array('tableid' => $customerorder->table_no));
+		$settinginfo			= $this->kitchen_model->settinginfo();
 		$data['settinginfo']    = $settinginfo;
 		$data['storeinfo']      = $settinginfo;
-		$data['currency']=$this->kitchen_model->currencysetting($data['storeinfo']->currency);  
+		$data['currency']	   	= $this->kitchen_model->currencysetting($settinginfo->currency);
+		$data['taxinfos']       = $this->taxchecking();
 		$data['comsettinginfo'] = $this->kitchen_model->commonsettinginfo();
-		$data['module'] 		   = "kitchen";
-		$data['page']   		   = "orderlistpdf";   
-		$view  				   = $this->load->view('orderlistpdf',$data,true);
-		echo $view;exit;
-		  
-		 
+		$data['module'] 		= "kitchen";
+		$data['page']   		= "orderlistpdf";   
+		$view  				   	= $this->load->view('orderlistpdf',$data,true);
+		echo $view;exit; 
 	}
 
- 
+	private function taxchecking()
+	{
+		$taxinfos = '';
+		if ($this->db->table_exists('tbl_tax')) {
+			$taxsetting = $this->db->select('*')->from('tbl_tax')->get()->row();
+		}
+		if(!empty($taxsetting)){
+		if($taxsetting->tax == 1){
+		$taxinfos = $this->db->select('*')->from('tax_settings')->get()->result_array();
+			}
+		}
+		  return $taxinfos;
+	}
 
 }
 

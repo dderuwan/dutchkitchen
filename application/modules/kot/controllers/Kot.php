@@ -226,24 +226,15 @@ class Kot extends MX_Controller
 	public function delete($id = null)
 
 	{
-
-		$this->permission->module('purchase', 'delete')->redirect();
-
-
-
-		if ($this->purchase_model->delete($id)) {
-
+		// $this->permission->module('kot', 'delete')->redirect();
+		if ($this->kot_model->delete($id)) {
 			#set success message
-
 			$this->session->set_flashdata('message', display('delete_successfully'));
 		} else {
-
 			#set exception message
-
 			$this->session->set_flashdata('exception', display('please_try_again'));
 		}
-
-		redirect('purchase/purchase-list');
+		redirect('kot/receplist');
 	}
 
 	public function addproduction($id = null)

@@ -479,8 +479,6 @@ class Home extends MX_Controller
 		}
 	}
 	public function getpendingorder()
-
-
 	{
 		// $pendingorder= $this->home_model->pendingorder();
 		// echo json_encode($pendingorder);
@@ -491,9 +489,7 @@ class Home extends MX_Controller
 			$orderdetails = $this->db->select('*')->from('order_menu')->where('order_id', $oid)->join('item_foods', 'order_menu.menu_id=item_foods.ProductsID', 'left')->get()->result();
 
 			// foreach ($orderdetails  as $value)
-
-
-				echo json_encode($oid);
+			echo json_encode($oid);
 		}
 	}
 
@@ -504,8 +500,18 @@ class Home extends MX_Controller
 			$data = array(
 				'order_status' => 3
 			);
+			// update status
 			$this->db->where('order_id', $id)->update("customer_order", $data);
-			redirect('dashboard/home');
+			$orderdetails = $this->db->select('*')->from('order_menu')->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')->where('order_menu.order_id', $id)->get()->result();
+			// update stock
+			foreach ($orderdetails as $details) :
+				$stockupdate = array(
+					'stock' =>  $details->stock - $details->quantity,
+					'used' => $details->used +  $details->quantity
+				);
+				$this->db->where('id',  $details->product_id)->update("products", $stockupdate);
+			endforeach;
+			 redirect('dashboard/home');
 		}
 	}
 

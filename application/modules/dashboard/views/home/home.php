@@ -160,29 +160,26 @@
     // }
   
 
-    // window.addEventListener("load", function() {
-        
-    // });
+     window.addEventListener("load", function() {
+        showAlert(); 
+     });
     var sound = document.getElementById('myAudio');
 
-    setInterval(function() {
-        showAlert();
-      }, 2000);
-
+    // setInterval(function() {
+       
+    //   }, 2000);
     function showAlert() {
         var base_url = $("#base_url").val();
         $.ajax({
             datatype: "json",
             url: base_url + 'dashboard/getpendingorder',
-
             success: function(res) {
-                sound.play();
+               if(res){
+                // sound.play();
                 let data = JSON.parse(res);
-               
                 Swal.fire({
                     title: data,
                     showDenyButton: true,
-                    showCancelButton: true,
                     confirmButtonText: "Accept",
                     denyButtonText: `Decline`,
 
@@ -190,7 +187,7 @@
 
                     /* Read more about isConfirmed, isDenied below */
                         if (result.isConfirmed) {
-                            Swal.fire("Order Is Ready", "", "info");
+                            Swal.fire("Order Is Confirm", "", "info");
                             $.ajax({
                                 type: "get",
                                 url: base_url + 'updateorder-status/' +data,
@@ -200,7 +197,7 @@
                                 success: function(data) {
                                     //   $('.editbanner').html(data);
                                     //   $('#edit').modal('show');
-                                    window.location.reload();
+                                    // window.location.reload();
                                 }
 
                             });
@@ -223,6 +220,10 @@
                             });
                         }
                 });
+               
+               }
+              
+           
 
             },
 
