@@ -159,8 +159,6 @@ class Kot_model extends CI_Model
 
 		$data = array(
 			'item_id' => $this->input->post('foodid', TRUE),
-			'rece_date' => date('Ymd'),
-			'status' => 1
 		);
 		$this->db->insert('recepe', $data);
 		$returnrecepeid = $this->db->insert_id();
@@ -169,6 +167,7 @@ class Kot_model extends CI_Model
 
 			$product_quantity = $quantity[$i];
 			$product_id = $p_id[$i];
+
 
 			$data1 = array(
 				'rece_id' 		=> $returnrecepeid,
@@ -186,21 +185,21 @@ class Kot_model extends CI_Model
 	public function findByReceId($id = null)
 	{
 		return $this->db->select('*')->from('recepe')->where('id', $id)->join('item_foods', 'recepe.item_id=item_foods.ProductsID', 'left')->get()->row();
-		
 	}
-	public function recepeiteminfo($id){
+	public function recepeiteminfo($id)
+	{
 		$this->db->select('recepe_details.*,products.id,products.product_name');
 		$this->db->from('recepe_details');
-		$this->db->join('products','recepe_details.product_id=products.id','left');
-		$this->db->where('rece_id',$id);
+		$this->db->join('products', 'recepe_details.product_id=products.id', 'left');
+		$this->db->where('rece_id', $id);
 		$query = $this->db->get();
 		if (!empty($query)) {
-			return $query->result();	
+			return $query->result();
 		}
 		return false;
-
-	 }
-	public function delete($id = null){
+	}
+	public function delete($id = null)
+	{
 		$this->db->where('id', $id)->delete('recepe');
 		$this->db->where('rece_id', $id)->delete('recepe_details');
 		if ($this->db->affected_rows()) {
@@ -210,303 +209,41 @@ class Kot_model extends CI_Model
 		}
 	}
 
-	public function update(){
+	public function update()
+	{
 
-		$id = $this->input->post('purID', TRUE);
-
+		$id = $this->input->post('receID', TRUE);
 		$saveid = $this->session->userdata('id');
-
+		$f_id = $this->input->post('foodid', TRUE);
 		$p_id = $this->input->post('product_id', TRUE);
-
-		$oldinvoice = $this->input->post('oldinvoice', TRUE);
-
-		$oldsupplier = $this->input->post('oldsupplier', TRUE);
-
-		$length = count($p_id);
-
-		$purchase_date = str_replace('/', '-', $this->input->post('purchase_date', TRUE));
-
-		$newdate = date('Y-m-d', strtotime($purchase_date));
-
-		$expire_date = str_replace('/', '-', $this->input->post('expire_date', TRUE));
-
-		$exdate = date('Y-m-d', strtotime($expire_date));
-
-		$data = array(
-
-			'invoiceid'				=>	$this->input->post('invoice_no', TRUE),
-
-			'suplierID'			    =>	$this->input->post('suplierid', TRUE),
-
-			'total_price'	        =>	$this->input->post('grand_total_price', TRUE),
-
-			'details'	            =>	$this->input->post('purchase_details', TRUE),
-
-			'purchasedate'		    =>	$newdate,
-
-			'purchaseexpiredate'	=>	$exdate,
-
-			'savedby'			    =>	$saveid
-
-		);
-
-		$this->db->where('purID', $id)
-
-			->update($this->table, $data);
-
-
-
-
-
-		$rate = $this->input->post('product_rate', TRUE);
-
+		$r_id = $this->input->post('rece_id', TRUE);
 		$quantity = $this->input->post('product_quantity', TRUE);
 
-		$t_price = $this->input->post('total_price', TRUE);
-
-
+		
 
 		for ($i = 0, $n = count($p_id); $i < $n; $i++) {
 
-			$product_quantity = $quantity[$i];
-
-			$product_rate = $rate[$i];
-
 			$product_id = $p_id[$i];
+			$product_quantity = $quantity[$i];
+			$rece_id = $r_id[$i];
+			
+			$this->db->where('rece_id',$rece_id);
+			$this->db->delete('recepe_details');
 
-			$total_price = $t_price[$i];
-
-			$this->db->select('*');
-
-			$this->db->from('purchase_details');
-
-			$this->db->where('purchaseid', $id);
-
-			$this->db->where('proid', $product_id);
-
-			$query = $this->db->get();
-
-			if ($query->num_rows() > 0) {
-
-
-
-				$dataupdate = array(
-
-					'purchaseid'		=>	$id,
-
-					'proid'		        =>	$product_id,
-
-					'quantity'			=>	$product_quantity,
-
-					'price'				=>	$product_rate,
-
-					'totalprice'		=>	$total_price,
-
-					'purchaseby'		=>	$saveid,
-
-					'purchasedate'		=>	$newdate,
-
-					'purchaseexpiredate' =>	$exdate
-
-				);
-
-				$oldpurchase = $this->db->select("quantity")->from("purchase_details")->where('proid', $product_id)->where('purchaseid', $id)->get()->row();
-
-				$oldstock = $this->db->select("stock")->from("products")->where('id', $product_id)->get()->row();
-
-				$oldreadystock = $this->db->select("ready")->from("tbl_reuseableproduct")->where('product_id', $product_id)->get()->row();
-
-				$newstock = $oldstock->stock + $product_quantity - $oldpurchase->quantity;
-
-				$newreadystock = $oldreadystock->ready + $product_quantity - $oldpurchase->quantity;
-
-				$stupdata = array(
-
-					'id'			    =>	$product_id,
-
-					'stock'			=>	$newstock,
-
-				);
-
+			$data1 = array(
+				'rece_id'			=>	$rece_id ,
+				'product_id'		=>	$product_id,
+				'quantity'			=>	$product_quantity
+			);
+				
 				if (!empty($quantity)) {
+					$this->db->insert('recepe_details', $data1);
+			 	}
 
-					$this->db->where('purchaseid', $id);
-
-					$this->db->where('proid', $product_id);
-
-					$this->db->update('purchase_details', $dataupdate);
-
-					$this->db->where('id', $product_id)->update('products', array('stock' => $newstock));
-
-					$this->db->where('product_id', $product_id)->update('tbl_reuseableproduct', array('ready' => $newreadystock));
-				}
-			} else {
-
-				$data1 = array(
-
-					'purchaseid'		=>	$id,
-
-					'proid'		        =>	$product_id,
-
-					'quantity'			=>	$product_quantity,
-
-					'price'				=>	$product_rate,
-
-					'totalprice'		=>	$total_price,
-
-					'purchaseby'		=>	$saveid,
-
-					'purchasedate'		=>	$newdate
-
-				);
-
-				if (!empty($quantity)) {
-
-					$this->db->insert('purchase_details', $data1);
-
-					$this->db->where('id', $product_id)->update('products', array('stock' => $newstock));
-				}
-			}
+		
 		}
-
-
-
-		$this->db->select('*');
-
-		$this->db->from('purchase_details');
-
-		$this->db->where('purchaseid', $id);
-
-		$query = $this->db->get();
-
-		$details = $query->result_array();
-
-		$test = array();
-
-		$k = 0;
-
-		foreach ($details as $single) {
-
-			$k++;
-
-			$test[$k] = $single['proid'];
-		}
-
-		$result = array_diff($test, $p_id);
-
-		if (!empty($result)) {
-
-			foreach ($result as $delval) {
-
-				$this->db->where('proid', $delval);
-
-				$this->db->where('purchaseid', $id);
-
-				$del = $this->db->delete('purchase_details', TRUE);
-			}
-		}
-
-
-
-		$supinfo = $this->db->select('*')->from('supplier')->where('supid', $oldsupplier)->get()->row();
-
-		$sup_head = $supinfo->suplier_code . '-' . $supinfo->supName;
-
-		$sup_coa = $this->db->select('*')->from('acc_coa')->where('HeadName', $sup_head)->get()->row();
-
-
-
-		$trans_coa = $this->db->select('*')->from('acc_transaction')->where('VNo', $oldinvoice)->where('COAID', '10107')->get()->row();
-
-		$updateid = $trans_coa->ID;
-
-		$invoice = $this->input->post('invoice_no', TRUE);
-
-		$invoicetotal = $this->input->post('grand_total_price', TRUE);
-
-		$change_amount = $trans_coa->Debit - $invoicetotal;
-
-		$total_amount = $supinfo->total_amount + $change_amount;
-
-		$due_amount = $supinfo->due_amount + $change_amount;
-
-		$this->db->where('supid', $oldsupplier)->update("supplier", array("total_amount" => $total_amount, "due_amount" => $due_amount));
-
-		//inventory debited update 
-
-		transaction_update($updateid, $invoice, $newdate, $invoicetotal, 0, $saveid, $newdate);
-
-
-
-
-
-		$store_inventory = $this->db->select('*')->from('acc_transaction')->where('VNo', $oldinvoice)->where('COAID', '1020101')->get()->row();
-
-		$updateinventoryid = $store_inventory->ID;
-
-
-
-		$supold_coa = $this->db->select('*')->from('acc_transaction')->where('VNo', $oldinvoice)->where('COAID', $sup_coa->HeadCode)->where('Credit>', 0)->get()->row();
-
-		$updatesupid = $supold_coa->ID;
-
-
-
-		$supold_coa = $this->db->select('*')->from('acc_transaction')->where('VNo', $oldinvoice)->where('COAID', $sup_coa->HeadCode)->where('Debit>', 0)->get()->row();
-
-		$Debitupdatesupid = $supold_coa->ID;
-
-
-
-		//  Supplier credit
-
-		transaction_update($updatesupid, $invoice, $newdate, 0, $invoicetotal, $saveid, $newdate);
-
-
-
-		// Supplier Debit for cash Amount
-
-		//     $podebitpaidamount = array(
-
-		// 	  'VNo'            =>  $invoice,
-
-		// 	  'VDate'          =>  $newdate,
-
-		// 	  'Debit'         =>   $this->input->post('grand_total_price',TRUE),
-
-		// 	  'UpdateBy'       =>  $saveid,
-
-		// 	  'UpdateDate'     =>  $newdate,
-
-		// 	); 
-
-		//    $this->db->where('ID',$Debitupdatesupid);
-
-		//    $this->db->update('acc_transaction',$podebitpaidamount);	
-
-
-
-		//Cash in Hand  Cdedit.
-
-		// $creditcashpaidamount = array(
-
-		//   'VNo'            =>  $invoice,
-
-		//   'VDate'          =>  $newdate,
-
-		//   'Credit'         =>  $this->input->post('grand_total_price',TRUE),// paid amount*****
-
-		//   'UpdateBy'       =>  $saveid,
-
-		//   'UpdateDate'     =>  $newdate,
-
-		// ); 
-
-		// $this->db->where('ID',$updateinventoryid);
-
-		// $this->db->update('acc_transaction',$creditcashpaidamount);
-
-		return true;
+		
+		 return true;
 	}
 
 
@@ -577,54 +314,43 @@ class Kot_model extends CI_Model
 
 		return true;
 	}
-
-
-
-
-
-	// public function findById($id = null)
-
-	// {
-
-	// 	return $this->db->select("*")->from($this->table)
-
-	// 		->where('purID', $id)
-
-	// 		->get()
-
-	// 		->row();
-	// }
-
-
-
 	public function checkitem($product_name)
-
 	{
-
 		$this->db->select('*');
-
 		$this->db->from('products');
-
 		$this->db->where('is_active', 1);
-
 		$this->db->where('product_name', $product_name);
-
 		$query = $this->db->get();
-
 		if ($query->num_rows() > 0) {
-
 			return $query->result_array();
 		}
-
 		return false;
 	}
+	public function findById($id = null)
+	{
+		return $this->db->select("*")->from($this->table)->where('id', $id)->get()->row();
+	}
+	public function productinfo($id)
+	{
 
+		$isPaid = $this->db->select('*')->from($this->table)->where("id", $id)->get()->row();
+		$this->db->select('recepe_details.*,products.id,products.product_name');
+		$this->db->from('recepe_details');
+		$this->db->join('products', 'recepe_details.product_id=products.id', 'left');
+		$this->db->where('rece_id', $id);
+		$query = $this->db->get();
+		if (!empty($isPaid)) {
+			$isPaid = $query->result();
+			return $isPaid;
+		}
+		return false;
+	}
 	public function finditem($product_name)
 	{
 		$this->db->select('*');
 		$this->db->from('products');
 		$this->db->where('is_active', 1);
-		$this->db->where('stock >',0);
+		$this->db->where('stock >', 0);
 		$this->db->like('product_name', $product_name);
 		$query = $this->db->get();
 		if ($query->num_rows() > 0) {
@@ -663,32 +389,7 @@ class Kot_model extends CI_Model
 		return $data2;
 	}
 
-	public function iteminfo($id)
-	{
 
-		$isPaid = $this->db->select("status")->from("purchaseitem")->where("purID", $id)->get()->row();
-
-		$this->db->select('purchase_details.*,products.id,products.product_name,unit_of_measurement.uom_short_code');
-
-		$this->db->from('purchase_details');
-
-		$this->db->join('products', 'purchase_details.proid=products.id', 'left');
-
-		$this->db->join('unit_of_measurement', 'unit_of_measurement.id = products.uom_id', 'inner');
-
-		$this->db->where('purchaseid', $id);
-
-		$query = $this->db->get();
-
-		if (!empty($isPaid)) {
-
-			$isPaid->details = $query->result();
-
-			return $isPaid;
-		}
-
-		return false;
-	}
 
 	//item Dropdown
 

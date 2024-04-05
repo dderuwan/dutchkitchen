@@ -869,7 +869,7 @@ $fullname = $this->session->userdata('fullname');
 
                 //set icon
             
-                "icon" => "<i class='ti-shopping-cart' aria-hidden='true'></i>
+                "icon" => "<i class='fab fa-first-order' aria-hidden='true'></i>
 
                 ",
 
@@ -894,7 +894,7 @@ $fullname = $this->session->userdata('fullname');
 
                 //set icon
             
-                "icon" => "<i class='ti-shopping-cart' aria-hidden='true'></i>
+                "icon" => "<i class='ti-pin-alt' aria-hidden='true'></i>
 
                 ",
 
