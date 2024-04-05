@@ -225,7 +225,7 @@ class Kot_model extends CI_Model
 
 			$product_id = $p_id[$i];
 			$product_quantity = $quantity[$i];
-			$rece_id = $r_id[$i];
+			$rece_id = $id[$i];
 			
 			$this->db->where('rece_id',$rece_id);
 			$this->db->delete('recepe_details');

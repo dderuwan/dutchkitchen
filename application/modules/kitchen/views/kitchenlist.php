@@ -38,7 +38,7 @@
                                                                     <td class="text-center"><?php echo $sl; ?></td>
                                                                     <td class="text-center"><?php echo html_escape($items->saleinvoice); ?></td>
                                                                     <td class="text-center"><?php echo html_escape($items->firstname); ?></td>
-                                                                    <td class="text-center"><?php html_escape($originalDate = $items->return_date);
+                                                                    <td class="text-center"><?php html_escape($originalDate = $items->order_date);
                                                                                             echo $newDate = date("d-M-Y", strtotime($originalDate));
                                                                                             ?></td>
                                                                     <td class="text-center"><?php if ($currency->position == 1) {
