@@ -80,7 +80,7 @@ function addmore(divName){
         var tab6 = tab5 + 1;
         var tab7 = tab6 + 1;
        
-        newdiv.innerHTML ='<td class="span3 supplier"><input type="text" name="product_name" required class="form-control product_name productSelection" onkeypress="product_list('+ count +');" placeholder="Product Name" id="product_name_'+ count +'" tabindex="'+tab1+'" ><input type="hidden" class="autocomplete_hidden_value product_id_'+ count +'" name="product_id[]" id="SchoolHiddenId"/>  <input type="hidden" class="sl" value="'+ count +'">  </td><td class="text-right"><input type="number" name="product_quantity[]" tabindex="'+tab2+'" required  id="cartoon_'+ count +'" class="form-control text-right store_cal_' + count + '" onkeyup="calculate_store(' + count + ');" onchange="calculate_store(' + count + ');" placeholder="0.00" value="" min="0"/>  </td>  <td class="center" width="40%"> <a onclick="editfinyear(' + count + ')" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="" data-original-title="Update"><i class="ti-pencil-alt text-white" aria-hidden="true"></i></a>  <a href="#"  onclick="deletePurchaseRow(this)" tabindex="8" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete "><i class="ti-trash"></i></a></td>';
+        newdiv.innerHTML ='<td class="span3 supplier"><input type="text" name="product_name" required class="form-control product_name productSelection" onkeypress="product_list('+ count +');" placeholder="Product Name" id="product_name_'+ count +'" tabindex="'+tab1+'" ><input type="hidden" class="autocomplete_hidden_value product_id_'+ count +'" name="product_id[]" id="SchoolHiddenId"/>  <input type="hidden" class="sl" value="'+ count +'">  </td><td class="text-right"><input type="number" name="product_quantity[]" tabindex="'+tab2+'" required  id="cartoon_'+ count +'" class="form-control text-right store_cal_' + count + '" onkeyup="calculate_store(' + count + ');" onchange="calculate_store(' + count + ');" placeholder="0.00" value="" min="0"/>  </td>  <td class="center" width="40%">   <a href="#"  onclick="deleteProductRow(this)" tabindex="8" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete "><i class="ti-trash"></i></a></td>';
        
         document.getElementById(divName).appendChild(newdiv);
         document.getElementById(tabin).focus();
@@ -106,9 +106,9 @@ function addmore(divName){
 
     }
     //Delete a row of table
-function deletePurchaseRow(t) {
+function deleteProductRow(t) {
     'use strict';
-    var a = $("#purchaseTable > tbody > tr").length;
+    var a = $("#recepeTable > tbody > tr").length;
     if (1 == a){
         swal({
             title: "Failed",
@@ -127,3 +127,8 @@ function deletePurchaseRow(t) {
     }
 
 }
+
+'use strict';
+var row = $("#recepeTable tbody tr").length;
+var count = row+1;
+var limits = 500;

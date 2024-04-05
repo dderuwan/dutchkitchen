@@ -17,8 +17,8 @@ class Kot extends MX_Controller
 		$data['title']    = display('recepe_list');
 		#pagination starts
 		$config["base_url"] = base_url('kot/kot/index');
-		 $config["total_rows"]  = $this->kot_model->countlist();
-		
+		$config["total_rows"]  = $this->kot_model->countlist();
+
 		$config["per_page"]    = 15;
 		$config["uri_segment"] = 4;
 		$config["last_link"] = "Last";
@@ -47,8 +47,8 @@ class Kot extends MX_Controller
 		$data["links"] = $this->pagination->create_links();
 		$data['pagenum'] = $page;
 		// $data['items']   = $this->kot_model->ingrediant_dropdown();
-		$settinginfo=$this->kot_model->settinginfo();
-		$data['currency']=$this->kot_model->currencysetting($settinginfo->currency);
+		$settinginfo = $this->kot_model->settinginfo();
+		$data['currency'] = $this->kot_model->currencysetting($settinginfo->currency);
 
 		// 	if(!empty($id)) {
 
@@ -72,16 +72,17 @@ class Kot extends MX_Controller
 		$data['page']   = "addproduct";
 		echo Modules::run('template/layout', $data);
 	}
-	public function viewintfrm($id){
+	public function viewintfrm($id)
+	{
 		// $this->permission->method('room_facilities','update')->redirect();
 		$data['title'] = display('view_recepe');
 		$data['recepeinfo']   = $this->kot_model->findByReceId($id);
 		$data['recepedetails']   = $this->kot_model->recepeiteminfo($id);
-		$data['module'] = "kot";  
+		$data['module'] = "kot";
 		$data['page']   = "recepelist";
 		// echo Modules::run('template/layout', $data);
-		 $this->load->view('kot/recepeview', $data);   
-	   }
+		$this->load->view('kot/recepeview', $data);
+	}
 
 	public function recepe_entry()
 	{
@@ -128,21 +129,12 @@ class Kot extends MX_Controller
 	}
 	public function updateintfrm($id)
 	{
-
-		$this->permission->method('purchase', 'update')->redirect();
-
-		$data['title'] = display('purchase_edit');
-
-		$data['supplier']   = $this->purchase_model->supplier_dropdown();
-
-		$data['purchaseinfo']   = $this->purchase_model->findById($id);
-
-		$data['iteminfo']       = $this->purchase_model->iteminfo($id);
-
-		$data['module'] = "purchase";
-
-		$data['page']   = "purchaseedit";
-
+		$data['title'] = display('edit_recepe');
+		$data['item'] = $this->kot_model->item_dropdown();
+		$data['iteminfo']   = $this->kot_model->findById($id);
+		$data['productinfo']       = $this->kot_model->productinfo($id);
+		$data['module'] = "kot";
+		$data['page']   = "editproduct";
 		echo Modules::run('template/layout', $data);
 	}
 
@@ -176,7 +168,7 @@ class Kot extends MX_Controller
 
 	public function update_entry()
 	{
-
+	
 		$finyear = $this->input->post('finyear', true);
 
 		if ($finyear <= 0) {
@@ -186,32 +178,29 @@ class Kot extends MX_Controller
 			redirect($_SERVER['HTTP_REFERER']);
 		}
 
-		$this->form_validation->set_rules('invoice_no', 'Invoice Number', 'required|max_length[50]');
-
-		$this->form_validation->set_rules('purchase_date', 'Purchase Date', 'required');
+		$this->form_validation->set_rules('receID', 'Recepe Number', 'required|max_length[50]');
 
 		$saveid = $this->session->userdata('id');
 
 		if ($this->form_validation->run()) {
 
 
+			// 	// $this->permission->method('purchase', 'update')->redirect();
 
-			$this->permission->method('purchase', 'update')->redirect();
+			if ($this->kot_model->update()) {
 
-			if ($this->purchase_model->update()) {
+				 $this->session->set_flashdata('message', display('update_successfully'));
 
-				$this->session->set_flashdata('message', display('update_successfully'));
-
-				redirect('purchase/purchase-list');
+				 redirect('kot/recepe_list');
 			} else {
 
-				$this->session->set_flashdata('exception',  display('please_try_again'));
+				 $this->session->set_flashdata('exception',  display('please_try_again'));
 			}
 
-			redirect("purchase/purchase-list");
+			redirect("kot/recepe_list");
 		} else {
 
-			redirect("purchase/purchase-list");
+			 redirect("kot/recepe_list");
 		}
 	}
 

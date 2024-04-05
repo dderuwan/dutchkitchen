@@ -21,7 +21,7 @@
                     </div>
                 </div>
                <div class="row"></div>
-                <table class="table table-bordered table-hover" id="purchaseTable">
+                <table class="table table-bordered table-hover" id="recepeTable">
                     <thead>
                         <tr>
                             <th class="text-center" width="40%"><?php echo display('product_information') ?><i class="text-danger">*</i></th>
@@ -40,8 +40,7 @@
                                 <input type="number" min="1" name="product_quantity[]" id="cartoon_1" class="form-control text-right store_cal_1"  placeholder="0.00" value="" min="0" tabindex="6" required>
                             </td>
                             <td class="center" width="40%">
-                                <a onclick="editfinyear('3')" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left" title="" data-original-title="Update"><i class="ti-pencil-alt text-white" aria-hidden="true"></i></a>
-                                <a href="#" onclick="return confirm('Are you sure ?')" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete "><i class="ti-trash"></i></a>
+                                <a href="#" onclick="return confirm('Are you sure ?')" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete " onclick="deleteProductRow(this)"><i class="ti-trash"></i></a>
                             </td>
                         </tr>
                     </tbody>
