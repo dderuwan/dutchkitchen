@@ -40,7 +40,7 @@
                                 <input type="number" min="1" name="product_quantity[]" id="cartoon_1" class="form-control text-right store_cal_1"  placeholder="0.00" value="" min="0" tabindex="6" required>
                             </td>
                             <td class="center" width="40%">
-                                <a href="#" onclick="return confirm('Are you sure ?')" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete " onclick="deleteProductRow(this)"><i class="ti-trash"></i></a>
+                                <a href="#" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Delete " onclick="deleteProductRow(this)"><i class="ti-trash"></i></a>
                             </td>
                         </tr>
                     </tbody>

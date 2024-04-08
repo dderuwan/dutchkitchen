@@ -16,7 +16,7 @@ class Home extends MX_Controller
 		parent::__construct();
 
 
-
+	
 		$this->load->model(array(
 
 			'home_model'
@@ -495,8 +495,8 @@ class Home extends MX_Controller
 
 	public function updateorderstatus($id)
 	{
-		$customerorder = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
-		if ($customerorder) {
+		$customerorder1 = $this->db->select("*")->from('customer_order')->where('order_id', $id)->get()->row();
+		if ($customerorder1) {
 			$data = array(
 				'order_status' => 3
 			);
@@ -511,8 +511,31 @@ class Home extends MX_Controller
 				);
 				$this->db->where('id',  $details->product_id)->update("products", $stockupdate);
 			endforeach;
-			 redirect('dashboard/home');
+			//  redirect('dashboard/home');
 		}
+		// $customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
+		$saveid		  =$this->session->userdata('id');
+		$isadmin		  =$this->session->userdata('user_type');
+		$customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
+		$data['orderinfo']  	= $customerorder;
+		$data['customerinfo']   = $this->home_model->readrow('*', 'customerinfo', array('customerid' => $customerorder->customer_id));
+		$data['iteminfo']       = $this->home_model->customerorder($id);
+		$data['billinfo']	  	= $this->home_model->billinfo($id);
+		$data['cashierinfo']    = $this->home_model->readrow('*', 'user', array('id' => $data['billinfo']->create_by));
+		$data['tableinfo']	   	= $this->home_model->readrow('*', 'rest_table', array('tableid' => $customerorder->table_no));
+		$settinginfo			= $this->home_model->settinginfo();
+		$data['settinginfo']    = $settinginfo;
+		$data['storeinfo']      = $settinginfo;
+		$data['currency']	   	= $this->home_model->currencysetting($settinginfo->currency);
+		$data['taxinfos']       = $this->taxchecking();
+		$data['comsettinginfo'] = $this->home_model->commonsettinginfo();
+		$data['module'] 		= "home";
+		  $data['page']   		= "home/orderlistpdf";  
+		$view  				   	= $this->load->view('home/orderlistpdf',$data,true);
+
+		echo $view;exit;
+
+	
 	}
 
 	public function updatecancleorderstatus($id)
@@ -525,5 +548,18 @@ class Home extends MX_Controller
 			$this->db->where('order_id', $id)->update("customer_order", $data);
 			redirect('dashboard/home');
 		}
+	}
+	private function taxchecking()
+	{
+		$taxinfos = '';
+		if ($this->db->table_exists('tbl_tax')) {
+			$taxsetting = $this->db->select('*')->from('tbl_tax')->get()->row();
+		}
+		if(!empty($taxsetting)){
+		if($taxsetting->tax == 1){
+		$taxinfos = $this->db->select('*')->from('tax_settings')->get()->result_array();
+			}
+		}
+		  return $taxinfos;
 	}
 }

@@ -219,8 +219,6 @@ class Kot_model extends CI_Model
 		$r_id = $this->input->post('rece_id', TRUE);
 		$quantity = $this->input->post('product_quantity', TRUE);
 
-		
-
 		for ($i = 0, $n = count($p_id); $i < $n; $i++) {
 
 			$product_id = $p_id[$i];
@@ -231,14 +229,14 @@ class Kot_model extends CI_Model
 			$this->db->delete('recepe_details');
 
 			$data1 = array(
-				'rece_id'			=>	$rece_id ,
+				'rece_id'			=> 	$id[0] ,
 				'product_id'		=>	$product_id,
 				'quantity'			=>	$product_quantity
 			);
 				
-				if (!empty($quantity)) {
-					$this->db->insert('recepe_details', $data1);
-			 	}
+			if (!empty($quantity)) {
+				$this->db->insert('recepe_details', $data1);
+			}
 
 		
 		}

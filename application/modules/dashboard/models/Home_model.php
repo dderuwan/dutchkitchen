@@ -853,6 +853,134 @@ class Home_model extends CI_Model
 	// 	return $orderinfo;
 	// }
 
+	//Pending Order
+	public function insert_data($table, $data)
+	{
+		$this->db->insert($table, $data);
 
+		return $this->db->insert_id();
+	}
+  public function readrow($select_items, $table, $where_array)
+	{
+		$this->db->select($select_items);
+		$this->db->from($table);
+		foreach ($where_array as $field => $value) {
+			$this->db->where($field, $value);
+		}
+		return $this->db->get()->row();
+	}
+	public function read_all($select_items, $table, $where_array, $order_by_name = NULL, $order_by = NULL)
+	{
+		$this->db->select($select_items);
+		$this->db->from($table);
+		foreach ($where_array as $field => $value) {
+			$this->db->where($field, $value);
+		}
+		if ($order_by_name != NULL && $order_by != NULL)
+		{
+			$this->db->order_by($order_by_name, $order_by);
+		}
+		return $this->db->get()->result();
+	}
+	public function readupdate($select_items, $table, $where_array)
+	{
+		$this->db->select($select_items);
+		$this->db->from($table);
+		foreach ($where_array as $field => $value) {
+			$this->db->where($field, $value);
+		}
+		$this->db->order_by('updateid', 'DESC');
+		$this->db->limit(1);
+
+		return $this->db->get()->row();
+	}
+	public function read_allgroup($select_items, $table, $where_array)
+	{
+		$this->db->select($select_items);
+		$this->db->from($table);
+		foreach ($where_array as $field => $value) {
+			$this->db->where($field, $value);
+		}
+		$this->db->order_by('ordid', 'Asc');
+  
+		return $this->db->get()->result();
+	}
+	public function billinfo($id = null){
+	 $this->db->select('*');
+	 $this->db->from('bill');
+	 $this->db->where('order_id',$id);
+	 $query = $this->db->get();
+	 $billinfo=$query->row();
+	 return $billinfo;
+	 }
+	 public function customerorder($id,$nststus=null){
+		 if(!empty($nststus)){
+		 $where="order_menu.order_id = '".$id."' AND order_menu.isupdate='".$nststus."' ";
+		 }
+		 else{
+			 $where="order_menu.order_id = '".$id."' ";
+			 }
+		 $sql="SELECT order_menu.row_id,order_menu.order_id,order_menu.groupmid as menu_id,order_menu.notes,order_menu.add_on_id,order_menu.addonsqty,order_menu.groupvarient as varientid,
+		 order_menu.addonsuid,order_menu.qroupqty as menuqty,order_menu.price as price,order_menu.isgroup,order_menu.food_status,order_menu.allfoodready,order_menu.isupdate, 
+		 item_foods.ProductName, variant.variantid, variant.variantName, variant.price as mprice 
+		 FROM order_menu 
+		 LEFT JOIN item_foods ON order_menu.groupmid=item_foods.ProductsID 
+		 LEFT JOIN variant ON order_menu.groupvarient=variant.variantid 
+		 WHERE {$where} AND order_menu.isgroup=1 
+		 Group BY order_menu.groupmid 
+		 UNION SELECT order_menu.row_id,order_menu.order_id,order_menu.menu_id as menu_id,
+		 order_menu.notes,order_menu.add_on_id,order_menu.addonsqty,order_menu.varientid as varientid,
+		 order_menu.addonsuid,order_menu.menuqty as menuqty,order_menu.price as price,
+		 order_menu.isgroup,order_menu.food_status,order_menu.allfoodready,order_menu.isupdate, item_foods.ProductName, variant.variantid, 
+		 variant.variantName, variant.price as mprice 
+		 FROM order_menu 
+		 LEFT JOIN item_foods ON order_menu.menu_id=item_foods.ProductsID 
+		 LEFT JOIN variant ON order_menu.varientid=variant.variantid 
+		 WHERE {$where} AND order_menu.isgroup=0";
+		 $query=$this->db->query($sql);
+		 
+		 return $query->result();
+		 }
+
+		 public function settinginfo()
+
+		 { 
+	 
+			 return $this->db->select("*")->from('setting')
+	 
+				 ->get()
+	 
+				 ->row();
+	 
+		 }
+		 public function currencysetting($id = null)
+
+		 { 
+	 
+			 return $this->db->select("*")->from('currency')
+	 
+				 ->where('currencyid',$id) 
+	 
+				 ->get()
+	 
+				 ->row();
+	 
+		 } 
+		 public function commonsettinginfo()
+		 { 
+			 return $this->db->select("*")->from('common_setting')
+				 ->get()
+				 ->row();
+		 }
+		 public function getiteminfo($id = null)
+		 { 
+			 $this->db->select('*');
+			 $this->db->from('item_foods');
+			 $this->db->where('ProductsID',$id);
+			 $query = $this->db->get();
+			 $itemlist=$query->row();
+			 return $itemlist;
+		 }
+	 
 
 }
