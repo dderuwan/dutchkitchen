@@ -191,16 +191,16 @@ class Kot extends MX_Controller
 
 				 $this->session->set_flashdata('message', display('update_successfully'));
 
-				 redirect('kot/recepe_list');
+				  redirect('kot/recepe_list');
 			} else {
 
 				 $this->session->set_flashdata('exception',  display('please_try_again'));
 			}
 
-			redirect("kot/recepe_list");
+			 redirect("kot/recepe_list");
 		} else {
 
-			 redirect("kot/recepe_list");
+			  redirect("kot/recepe_list");
 		}
 	}
 

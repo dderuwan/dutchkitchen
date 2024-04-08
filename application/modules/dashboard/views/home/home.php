@@ -150,6 +150,8 @@
 
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/apexcharts.active.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/script.js"></script>
+<script src="<?php echo MOD_URL . $module; ?>/assets/js/print.js"></script>
 <script>
     // function confirmRefresh() {
     // var okToRefresh = confirm("Do you really want to refresh the page?");
@@ -195,6 +197,7 @@
                                     id: data,
                                 },
                                 success: function(data) {
+                                    printRawHtml(data);
                                     //   $('.editbanner').html(data);
                                     //   $('#edit').modal('show');
                                     // window.location.reload();
@@ -229,4 +232,11 @@
 
         })
     }
+    function printRawHtml(view) {
+        printJS({
+          printable: view,
+          type: 'raw-html',
+          
+        });
+      }
 </script>

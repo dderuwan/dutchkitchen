@@ -898,7 +898,7 @@ $fullname = $this->session->userdata('fullname');
 
                 ",
 
-                 "add_product" => array(
+                 "add_recepe" => array(
 
                     "controller" => "kot",
     

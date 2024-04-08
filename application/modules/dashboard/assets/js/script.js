@@ -104,3 +104,26 @@ $("body").on('click', '.allchecks', function () {
 
  });
 }(jQuery));
+
+function printorderlist(id){
+    "use strict";
+    var csrf = $('#csrf_token').val();
+    var myurl = baseurl + "kitchen/kitchen/viewdetailsprint/"+id;
+    $.ajax({
+        url: myurl,
+        type: "POST",
+        data: {
+            csrf_test_name: csrf,
+        },
+        success: function(data) {
+            printRawHtml(data);
+        }
+    });
+}
+function printRawHtml(view) {
+    printJS({
+      printable: view,
+      type: 'raw-html',
+          
+    });
+  }
