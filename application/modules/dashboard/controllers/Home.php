@@ -501,19 +501,27 @@ class Home extends MX_Controller
 				'order_status' => 3
 			);
 			// update status
-			$this->db->where('order_id', $id)->update("customer_order", $data);
-			$orderdetails = $this->db->select('*')->from('order_menu')->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')->where('order_menu.order_id', $id)->get()->result();
+			 $this->db->where('order_id', $id)->update("customer_order", $data);
+			$orderdetails = $this->db->select('*')->from('order_menu')	->where('order_menu.order_id', $id)->get()->result();
+			// ->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')
+		
 			// update stock
 			foreach ($orderdetails as $details) :
+				$menudetails = $this->db->select('*')->from('recepe')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->where('recepe.item_id', $details->menu_id)->get()->result();
+				// ->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')->where('order_menu.order_id', $id)->get()->result();
+				foreach ($menudetails as $mdetails) :
+					// $prodcutdetails = $this->db->select('*')->from('recepe_details')->where('recepe_details.rece_id', $mdetails->id)->get()->result();
+						$total_quantity = $details->menuqty * $mdetails->quantity;
 				$stockupdate = array(
-					'stock' =>  $details->stock - $details->quantity,
-					'used' => $details->used +  $details->quantity
+					'stock' =>  $details->stock - $total_quantity,
+					'used' => $details->used +  $total_quantity
 				);
-				$this->db->where('id',  $details->product_id)->update("products", $stockupdate);
+				$this->db->where('id',  $mdetails->product_id)->update("products", $stockupdate);
+				endforeach;
 			endforeach;
 			//  redirect('dashboard/home');
 		}
-		// $customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
+		 $customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
 		$saveid		  =$this->session->userdata('id');
 		$isadmin		  =$this->session->userdata('user_type');
 		$customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
