@@ -152,7 +152,63 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/script.js"></script>
 <script src="<?php echo MOD_URL . $module; ?>/assets/js/print.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
 <script>
+
+var sound = document.getElementById('myAudio');
+
+// Function to show alert and handle order confirmation or cancellation
+function showAlert(orderData) {
+    Swal.fire({
+        title: orderData,
+        showDenyButton: true,
+        // showCancelButton: true,
+        confirmButtonText: "Accept",
+        denyButtonText: "Decline",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire("Order Is Ready", "", "info");
+            $.ajax({
+                type: "get",
+                url: $("#base_url").val() + 'updateorder-status/' + orderData,
+                data: { id: orderData },
+                success: function (data) {
+                    printRawHtml(data);
+                    window.location.reload();
+                }
+            });
+        } else if (result.isDenied) {
+            Swal.fire("Order Is Canceled", "", "info");
+            $.ajax({
+                type: "get",
+                url: $("#base_url").val() + 'updatcancleeorder-status/' + orderData,
+                data: { id: orderData },
+                success: function () {
+                    window.location.reload();
+                }
+            });
+        }
+    });
+}
+
+// Check for new orders every 2 seconds
+setInterval(function () {
+    var base_url = $("#base_url").val();
+    $.ajax({
+        datatype: "json",
+        url: base_url + 'dashboard/getpendingorder',
+        success: function (res) {
+            let data = JSON.parse(res);
+            // Play sound and show alert only if there's an actual order
+            if (data && data !== "No new orders") { // Assuming "No new orders" is your API's way of indicating no new data
+                  sound.play();
+                showAlert(data);
+            }
+        },
+    });
+}, 2000);
+
     // function confirmRefresh() {
     // var okToRefresh = confirm("Do you really want to refresh the page?");
     // if (okToRefresh)
@@ -162,76 +218,76 @@
     // }
   
 
-     window.addEventListener("load", function() {
-        showAlert(); 
-     });
-    var sound = document.getElementById('myAudio');
+    //  window.addEventListener("load", function() {
+    //     showAlert(); 
+    //  });
+    // var sound = document.getElementById('myAudio');
 
-    // setInterval(function() {
+    // // setInterval(function() {
        
-    //   }, 2000);
-    function showAlert() {
-        var base_url = $("#base_url").val();
-        $.ajax({
-            datatype: "json",
-            url: base_url + 'dashboard/getpendingorder',
-            success: function(res) {
-               if(res){
-                // sound.play();
-                let data = JSON.parse(res);
-                Swal.fire({
-                    title: data,
-                    showDenyButton: true,
-                    confirmButtonText: "Accept",
-                    denyButtonText: `Decline`,
+    // //   }, 2000);
+    // function showAlert() {
+    //     var base_url = $("#base_url").val();
+    //     $.ajax({
+    //         datatype: "json",
+    //         url: base_url + 'dashboard/getpendingorder',
+    //         success: function(res) {
+    //            if(res){
+    //             // sound.play();
+    //             let data = JSON.parse(res);
+    //             Swal.fire({
+    //                 title: data,
+    //                 showDenyButton: true,
+    //                 confirmButtonText: "Accept",
+    //                 denyButtonText: `Decline`,
 
-                }).then((result) => {
+    //             }).then((result) => {
 
-                    /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                            Swal.fire("Order Is Confirm", "", "info");
-                            $.ajax({
-                                type: "get",
-                                url: base_url + 'updateorder-status/' +data,
-                                data: {
-                                    id: data,
-                                },
-                                success: function(data) {
-                                    printRawHtml(data);
-                                    //   $('.editbanner').html(data);
-                                    //   $('#edit').modal('show');
-                                    // window.location.reload();
-                                }
+    //                 /* Read more about isConfirmed, isDenied below */
+    //                     if (result.isConfirmed) {
+    //                         Swal.fire("Order Is Confirm", "", "info");
+    //                         $.ajax({
+    //                             type: "get",
+    //                             url: base_url + 'updateorder-status/' +data,
+    //                             data: {
+    //                                 id: data,
+    //                             },
+    //                             success: function(data) {
+    //                                 printRawHtml(data);
+    //                                 //   $('.editbanner').html(data);
+    //                                 //   $('#edit').modal('show');
+    //                                 // window.location.reload();
+    //                             }
 
-                            });
+    //                         });
 
-                        } else if (result.isDenied) {
+    //                     } else if (result.isDenied) {
 
-                            Swal.fire("Order Is Cancle", "", "info");
-                            $.ajax({
-                                type: "get",
-                                url: base_url + 'updatcancleeorder-status/' + data,
-                                data: {
-                                    id: data,
-                                },
-                                success: function(data) {
-                                    //   $('.editbanner').html(data);
-                                    //   $('#edit').modal('show');
-                                    window.location.reload();
-                                }
+    //                         Swal.fire("Order Is Cancle", "", "info");
+    //                         $.ajax({
+    //                             type: "get",
+    //                             url: base_url + 'updatcancleeorder-status/' + data,
+    //                             data: {
+    //                                 id: data,
+    //                             },
+    //                             success: function(data) {
+    //                                 //   $('.editbanner').html(data);
+    //                                 //   $('#edit').modal('show');
+    //                                 window.location.reload();
+    //                             }
 
-                            });
-                        }
-                });
+    //                         });
+    //                     }
+    //             });
                
-               }
+    //            }
               
            
 
-            },
+    //         },
 
-        })
-    }
+    //     })
+    // }
     function printRawHtml(view) {
         printJS({
           printable: view,
