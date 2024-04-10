@@ -175,7 +175,7 @@ function showAlert(orderData) {
                 data: { id: orderData },
                 success: function (data) {
                     printRawHtml(data);
-                    window.location.reload();
+                    //window.location.reload();
                 }
             });
         } else if (result.isDenied) {
@@ -185,7 +185,7 @@ function showAlert(orderData) {
                 url: $("#base_url").val() + 'updatcancleeorder-status/' + orderData,
                 data: { id: orderData },
                 success: function () {
-                    window.location.reload();
+                    // window.location.reload();
                 }
             });
         }
@@ -202,7 +202,7 @@ setInterval(function () {
             let data = JSON.parse(res);
             // Play sound and show alert only if there's an actual order
             if (data && data !== "No new orders") { // Assuming "No new orders" is your API's way of indicating no new data
-                  sound.play();
+                sound.play();
                 showAlert(data);
             }
         },
