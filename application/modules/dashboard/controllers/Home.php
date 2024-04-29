@@ -10,18 +10,19 @@ class Home extends MX_Controller
 
 
 	public function __construct()
-
 	{
 
 		parent::__construct();
 
 
-	
-		$this->load->model(array(
 
-			'home_model'
+		$this->load->model(
+			array(
 
-		));
+				'home_model'
+
+			)
+		);
 
 
 
@@ -58,10 +59,9 @@ class Home extends MX_Controller
 	}
 
 	public function index()
-
 	{
 
-		$data['title']    = "Home";
+		$data['title'] = "Home";
 
 		$ordernum = $this->home_model->countorder();
 
@@ -71,25 +71,25 @@ class Home extends MX_Controller
 
 		$ordercancel = $this->home_model->countcancel();
 
-		$data["totalorder"]  = $this->changeformat($ordernum);
+		$data["totalorder"] = $this->changeformat($ordernum);
 
-		$data["totalcheckin"]  = $this->changeformat($orderchekin);
+		$data["totalcheckin"] = $this->changeformat($orderchekin);
 
-		$data["totalpending"]  = $this->changeformat($orderpending);
+		$data["totalpending"] = $this->changeformat($orderpending);
 
-		$data["totalcancel"]  = $this->changeformat($ordercancel);
+		$data["totalcancel"] = $this->changeformat($ordercancel);
 
 		$todayorder = $this->home_model->todayorder();
 
-		$data["todaybooking"]  = $this->changeformat($todayorder);
+		$data["todaybooking"] = $this->changeformat($todayorder);
 
 		$totalamount = $this->home_model->totalamount();
 
-		$data["totalamount"]  = $this->changeformat($totalamount->amount);
+		$data["totalamount"] = $this->changeformat($totalamount->amount);
 
 		$customer = $this->home_model->totalcustomer();
 
-		$data["totalcustomer"]  = $this->changeformat($customer);
+		$data["totalcustomer"] = $this->changeformat($customer);
 
 		$data['customerlist'] = $this->home_model->customerlist();
 
@@ -163,9 +163,9 @@ class Home extends MX_Controller
 
 			$total .= $odertotal . ', ';
 
-			$months .=  '' . date('F-' . $syear, strtotime("+$k month")) . ', ';
+			$months .= '' . date('F-' . $syear, strtotime("+$k month")) . ', ';
 
-			$shortmonths .=  '' . date('M-' . $syear, strtotime("+$k month")) . ', ';
+			$shortmonths .= '' . date('M-' . $syear, strtotime("+$k month")) . ', ';
 		}
 
 		$data["monthlytotalamount"] = trim($totalamount, ',');
@@ -186,7 +186,7 @@ class Home extends MX_Controller
 
 		$data['module'] = "dashboard";
 
-		$data['page']   = "home/home";
+		$data['page'] = "home/home";
 
 		echo Modules::run('template/layout', $data);
 	}
@@ -246,7 +246,7 @@ class Home extends MX_Controller
 
 			$totalorder .= $odernum . ', ';
 
-			$months .=  '"' . date('F-' . $syear, strtotime("+$d month")) . '", ';
+			$months .= '"' . date('F-' . $syear, strtotime("+$d month")) . '", ';
 		}
 
 		for ($k = 1; $k < $totalmonth; $k++) {
@@ -275,7 +275,7 @@ class Home extends MX_Controller
 
 			$totalorder .= $odernum . ', ';
 
-			$months .=  '"' . date('F-' . $syear, strtotime("+$k month")) . '", ';
+			$months .= '"' . date('F-' . $syear, strtotime("+$k month")) . '", ';
 		}
 
 		$data["monthlysaleamount"] = trim($salesamount, ',');
@@ -288,7 +288,7 @@ class Home extends MX_Controller
 
 		$data['module'] = "dashboard";
 
-		$data['page']   = "home/searchchart";
+		$data['page'] = "home/searchchart";
 
 		$this->load->view('dashboard/home/searchchart', $data);
 	}
@@ -296,18 +296,17 @@ class Home extends MX_Controller
 
 
 	public function profile()
-
 	{
 
-		$data['title']  = "Profile";
+		$data['title'] = "Profile";
 
 		$data['module'] = "dashboard";
 
-		$data['page']   = "home/profile";
+		$data['page'] = "home/profile";
 
 		$id = $this->session->userdata('id');
 
-		$data['user']   = $this->home_model->profile($id);
+		$data['user'] = $this->home_model->profile($id);
 
 		echo Modules::run('template/layout', $data);
 	}
@@ -315,10 +314,9 @@ class Home extends MX_Controller
 
 
 	public function setting()
-
 	{
 
-		$data['title']    = "Profile Setting";
+		$data['title'] = "Profile Setting";
 
 		$id = $this->session->userdata('id');
 
@@ -334,9 +332,9 @@ class Home extends MX_Controller
 
 		$this->form_validation->set_rules('about', 'About', 'max_length[1000]|xss_clean');
 
-		$config['upload_path']          = './assets/img/user/';
+		$config['upload_path'] = './assets/img/user/';
 
-		$config['allowed_types']        = 'gif|jpg|png';
+		$config['allowed_types'] = 'gif|jpg|png';
 
 
 
@@ -352,17 +350,17 @@ class Home extends MX_Controller
 
 
 
-			$config['image_library']  = 'gd2';
+			$config['image_library'] = 'gd2';
 
-			$config['source_image']   = $image;
+			$config['source_image'] = $image;
 
-			$config['create_thumb']   = false;
+			$config['create_thumb'] = false;
 
 			$config['maintain_ratio'] = TRUE;
 
-			$config['width']          = 115;
+			$config['width'] = 115;
 
-			$config['height']         = 90;
+			$config['height'] = 90;
 
 			$this->load->library('image_lib', $config);
 
@@ -371,21 +369,21 @@ class Home extends MX_Controller
 			$this->session->set_flashdata('message', "Image Upload Successfully!");
 		}
 
-		$data['user'] = (object)$userData = array(
+		$data['user'] = (object) $userData = array(
 
-			'id' 		  => $this->input->post('id', TRUE),
+			'id' => $this->input->post('id', TRUE),
 
-			'firstname'   => $this->input->post('firstname', TRUE),
+			'firstname' => $this->input->post('firstname', TRUE),
 
-			'lastname' 	  => $this->input->post('lastname', TRUE),
+			'lastname' => $this->input->post('lastname', TRUE),
 
-			'email' 	  => $this->input->post('email', TRUE),
+			'email' => $this->input->post('email', TRUE),
 
-			'password' 	  => md5($this->input->post('password')),
+			'password' => md5($this->input->post('password')),
 
-			'about' 	  => $this->input->post('about', TRUE),
+			'about' => $this->input->post('about', TRUE),
 
-			'image'   	  => (!empty($image) ? $image : $this->input->post('old_image', TRUE))
+			'image' => (!empty($image) ? $image : $this->input->post('old_image', TRUE))
 
 		);
 
@@ -406,15 +404,17 @@ class Home extends MX_Controller
 
 
 
-				$this->session->set_userdata(array(
+				$this->session->set_userdata(
+					array(
 
-					'fullname'   => $this->input->post('firstname', TRUE) . ' ' . $this->input->post('lastname', TRUE),
+						'fullname' => $this->input->post('firstname', TRUE) . ' ' . $this->input->post('lastname', TRUE),
 
-					'email' 	  => $this->input->post('email', TRUE),
+						'email' => $this->input->post('email', TRUE),
 
-					'image'   	  => (!empty($image) ? $image : $this->input->post('old_image', TRUE))
+						'image' => (!empty($image) ? $image : $this->input->post('old_image', TRUE))
 
-				));
+					)
+				);
 
 
 
@@ -423,7 +423,7 @@ class Home extends MX_Controller
 				$this->session->set_flashdata('message', display('update_successfully'));
 			} else {
 
-				$this->session->set_flashdata('exception',  display('please_try_again'));
+				$this->session->set_flashdata('exception', display('please_try_again'));
 			}
 
 			redirect("profile-setting");
@@ -431,11 +431,11 @@ class Home extends MX_Controller
 
 			$data['module'] = "dashboard";
 
-			$data['page']   = "home/profile_setting";
+			$data['page'] = "home/profile_setting";
 
 			if (!empty($id))
 
-				$data['user']   = $this->home_model->profile($id);
+				$data['user'] = $this->home_model->profile($id);
 
 			echo Modules::run('template/layout', $data);
 		}
@@ -464,13 +464,13 @@ class Home extends MX_Controller
 
 				$data[] = array(
 
-					'id'      => $bookinfo->booking_number,
+					'id' => $bookinfo->booking_number,
 
-					'title'   => "Booked " . $roominfo->roomtype,
+					'title' => "Booked " . $roominfo->roomtype,
 
-					'start'   => $bookinfo->checkindate,
+					'start' => $bookinfo->checkindate,
 
-					'end'     => $bookinfo->checkoutdate
+					'end' => $bookinfo->checkoutdate
 
 				);
 			}
@@ -501,49 +501,55 @@ class Home extends MX_Controller
 				'order_status' => 3
 			);
 			// update status
-			 $this->db->where('order_id', $id)->update("customer_order", $data);
-			$orderdetails = $this->db->select('*')->from('order_menu')	->where('order_menu.order_id', $id)->get()->result();
+			$this->db->where('order_id', $id)->update("customer_order", $data);
+			$orderdetails = $this->db->select('*')->from('order_menu')->where('order_menu.order_id', $id)->get()->result();
 			// ->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')
-		
+
 			// update stock
-			foreach ($orderdetails as $details) :
+			foreach ($orderdetails as $details) {
 				$menudetails = $this->db->select('*')->from('recepe')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->where('recepe.item_id', $details->menu_id)->get()->result();
-				// ->join('recepe', 'recepe.item_id=order_menu.menu_id', 'left')->join('recepe_details', 'recepe_details.rece_id=recepe.id', 'left')->join('products', 'recepe_details.product_id=products.id', 'left')->where('order_menu.order_id', $id)->get()->result();
-				foreach ($menudetails as $mdetails) :
-					// $prodcutdetails = $this->db->select('*')->from('recepe_details')->where('recepe_details.rece_id', $mdetails->id)->get()->result();
-						$total_quantity = $details->menuqty * $mdetails->quantity;
-				$stockupdate = array(
-					'stock' =>  $details->stock - $total_quantity,
-					'used' => $details->used +  $total_quantity
-				);
-				$this->db->where('id',  $mdetails->product_id)->update("products", $stockupdate);
-				endforeach;
-			endforeach;
+				foreach ($menudetails as $mdetails) {
+					$productdetails = $this->db->select('*')->from('products')->where('id', $mdetails->product_id)->get()->result();
+					foreach ($productdetails as $pdetails) {
+						if ($pdetails->stock > $mdetails->quantity) {
+							$updatestock = ($pdetails->stock - ($mdetails->quantity * $details->menuqty));
+							$updateused = ($pdetails->used + ($mdetails->quantity * $details->menuqty));
+							$stockupdate = array(
+								'stock' => $updatestock,
+								'used' => $updateused
+							);
+						}
+						$this->db->where('id', $mdetails->product_id)->update("products", $stockupdate);
+					}
+
+				}
+			}
 			//  redirect('dashboard/home');
 		}
-		 $customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
-		$saveid		  =$this->session->userdata('id');
-		$isadmin		  =$this->session->userdata('user_type');
-		$customerorder =$this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
-		$data['orderinfo']  	= $customerorder;
-		$data['customerinfo']   = $this->home_model->readrow('*', 'customerinfo', array('customerid' => $customerorder->customer_id));
-		$data['iteminfo']       = $this->home_model->customerorder($id);
-		$data['billinfo']	  	= $this->home_model->billinfo($id);
-		$data['cashierinfo']    = $this->home_model->readrow('*', 'user', array('id' => $data['billinfo']->create_by));
-		$data['tableinfo']	   	= $this->home_model->readrow('*', 'rest_table', array('tableid' => $customerorder->table_no));
-		$settinginfo			= $this->home_model->settinginfo();
-		$data['settinginfo']    = $settinginfo;
-		$data['storeinfo']      = $settinginfo;
-		$data['currency']	   	= $this->home_model->currencysetting($settinginfo->currency);
-		$data['taxinfos']       = $this->taxchecking();
+		$customerorder = $this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
+		$saveid = $this->session->userdata('id');
+		$isadmin = $this->session->userdata('user_type');
+		$customerorder = $this->home_model->readrow('*', 'customer_order', array('order_id' => $id));
+		$data['orderinfo'] = $customerorder;
+		$data['customerinfo'] = $this->home_model->readrow('*', 'customerinfo', array('customerid' => $customerorder->customer_id));
+		$data['iteminfo'] = $this->home_model->customerorder($id);
+		$data['billinfo'] = $this->home_model->billinfo($id);
+		$data['cashierinfo'] = $this->home_model->readrow('*', 'user', array('id' => $data['billinfo']->create_by));
+		$data['tableinfo'] = $this->home_model->readrow('*', 'rest_table', array('tableid' => $customerorder->table_no));
+		$settinginfo = $this->home_model->settinginfo();
+		$data['settinginfo'] = $settinginfo;
+		$data['storeinfo'] = $settinginfo;
+		$data['currency'] = $this->home_model->currencysetting($settinginfo->currency);
+		$data['taxinfos'] = $this->taxchecking();
 		$data['comsettinginfo'] = $this->home_model->commonsettinginfo();
-		$data['module'] 		= "home";
-		  $data['page']   		= "home/orderlistpdf";  
-		$view  				   	= $this->load->view('home/orderlistpdf',$data,true);
+		$data['module'] = "home";
+		$data['page'] = "home/orderlistpdf";
+		$view = $this->load->view('home/orderlistpdf', $data, true);
 
-		echo $view;exit;
+		echo $view;
+		exit;
 
-	
+
 	}
 
 	public function updatecancleorderstatus($id)
@@ -563,11 +569,11 @@ class Home extends MX_Controller
 		if ($this->db->table_exists('tbl_tax')) {
 			$taxsetting = $this->db->select('*')->from('tbl_tax')->get()->row();
 		}
-		if(!empty($taxsetting)){
-		if($taxsetting->tax == 1){
-		$taxinfos = $this->db->select('*')->from('tax_settings')->get()->result_array();
+		if (!empty($taxsetting)) {
+			if ($taxsetting->tax == 1) {
+				$taxinfos = $this->db->select('*')->from('tax_settings')->get()->result_array();
 			}
 		}
-		  return $taxinfos;
+		return $taxinfos;
 	}
 }
